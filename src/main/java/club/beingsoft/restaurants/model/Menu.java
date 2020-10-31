@@ -18,6 +18,7 @@ public class Menu extends AbstractBaseEntity {
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
     private Restaurant restaurant;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "MENU_DISHES",
             joinColumns = {@JoinColumn(name = "dish_id")},
@@ -48,5 +49,17 @@ public class Menu extends AbstractBaseEntity {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public Set<Dish> getDishes() {
+        return dishes;
+    }
+
+    public void setDishes(Set<Dish> dishes) {
+        this.dishes = dishes;
+    }
+
+    public void removeDish(Set<Dish> dishes) {
+        this.dishes.removeAll(dishes);
     }
 }

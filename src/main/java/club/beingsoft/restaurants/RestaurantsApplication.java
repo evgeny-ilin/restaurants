@@ -16,5 +16,4 @@ public class RestaurantsApplication extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(RestaurantsApplication.class);
     }
-
 }

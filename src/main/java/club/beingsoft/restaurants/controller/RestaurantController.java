@@ -4,6 +4,7 @@ package club.beingsoft.restaurants.controller;
 
 import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
+import club.beingsoft.restaurants.util.CheckAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ public class RestaurantController {
             @PathVariable Integer id,
             @RequestBody Restaurant restaurant
     ) {
+        CheckAdmin.check();
         if (id > 0) restaurant.setId(id);
         restaurant.setUser();
         return new ResponseEntity(repository.save(restaurant), HttpStatus.CREATED);
@@ -41,6 +43,7 @@ public class RestaurantController {
     public ResponseEntity deleteDish(
             @PathVariable Integer id
     ) {
+        CheckAdmin.check();
         repository.deleteById(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
