@@ -2,46 +2,42 @@ package club.beingsoft.restaurants.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "restaurant_id"}, name = "votes_unique_user_restaurant_idx")})
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "restaurant_id", "vote_date"}, name = "votes_unique_user_restaurant_idx")})
 public class Vote extends AbstractBaseEntity {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
     private Restaurant restaurant;
 
     @Column(name = "vote_date", nullable = false)
     @NotNull
-    private Date voteDate;
+    private LocalDate voteDate;
 
     public Vote() {
     }
 
-    public Vote(@NotNull Integer restaurantId, @NotNull Date voteDate) {
-        this(null, restaurantId, voteDate);
+    public Vote(@NotNull Restaurant restaurant, @NotNull LocalDate voteDate) {
+        this(null, restaurant, voteDate);
     }
 
-    public Vote(Integer id, @NotNull Integer restaurantId, @NotNull Date voteDate) {
+    public Vote(Integer id, @NotNull Restaurant restaurant, @NotNull LocalDate voteDate) {
         super(id);
-        restaurant.setId(restaurantId);
+        this.restaurant = restaurant;
         this.voteDate = voteDate;
     }
 
-    public Integer getRestaurantId() {
-        return this.id;
-    }
-
-    public void setRestaurantId(Integer restaurantId) {
-        restaurant.setId(restaurantId);
-    }
-
-    public Date getVoteDate() {
+    public LocalDate getVoteDate() {
         return voteDate;
     }
 
-    public void setVoteDate(Date voteDate) {
+    public void setVoteDate(LocalDate voteDate) {
         this.voteDate = voteDate;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }

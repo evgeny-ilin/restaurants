@@ -16,16 +16,16 @@ import java.util.List;
 @RequestMapping(path = "/rest/restaurants")
 public class RestaurantController {
     @Autowired
-    private RestaurantJpaRepository repository;
+    private RestaurantJpaRepository restaurantJpaRepository;
 
     @GetMapping(produces = "application/json")
     public List<Restaurant> getAllRestaurants() {
-        return repository.findAll();
+        return restaurantJpaRepository.findAll();
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
     public Restaurant getRestaurant(@PathVariable Integer id) {
-        return repository.findById(id).get();
+        return restaurantJpaRepository.findById(id).get();
     }
 
     @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
@@ -36,15 +36,17 @@ public class RestaurantController {
         CheckAdmin.check();
         if (id > 0) restaurant.setId(id);
         restaurant.setUser();
-        return new ResponseEntity(repository.save(restaurant), HttpStatus.CREATED);
+        return new ResponseEntity(restaurantJpaRepository.save(restaurant), HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity deleteDish(
+    public ResponseEntity deleteRestaurant(
             @PathVariable Integer id
     ) {
         CheckAdmin.check();
-        repository.deleteById(id);
+        Restaurant restaurant = restaurantJpaRepository.findById(id).get();
+        restaurant.delete();
+        restaurantJpaRepository.save(restaurant);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,12 +1,11 @@
 package club.beingsoft.restaurants.controller;
 
-import club.beingsoft.restaurants.model.Dish;
-import club.beingsoft.restaurants.model.Menu;
-import club.beingsoft.restaurants.model.QDish;
+import club.beingsoft.restaurants.model.*;
 import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.util.CheckAdmin;
+import club.beingsoft.restaurants.util.exception.EntityDeleted;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/rest/menus")
@@ -47,7 +47,10 @@ public class MenuController {
     ) {
         CheckAdmin.check();
         if (menuId > 0) menu.setId(menuId);
-        menu.setRestaurant(restaurantJpaRepository.findById(restaurantId).get());
+        Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).get();
+        if (restaurant.isDeleted())
+            throw new EntityDeleted(restaurant.getName() + " was deleted");
+        menu.setRestaurant(restaurant);
         menu.setUser();
         return new ResponseEntity(menuJpaRepository.save(menu), HttpStatus.CREATED);
     }
@@ -59,12 +62,22 @@ public class MenuController {
     ) {
         CheckAdmin.check();
         Menu menu = getMenu(menuId);
-        menu.setId(menuId);
-
         Set<Dish> dishes = new HashSet<Dish>((Collection) dishJpaRepository.findAll(QDish.dish.id.in(dishesIds)));
+        checkDeleted(dishes);
         menu.setDishes(dishes);
-        menu.setUser();
         return new ResponseEntity(menuJpaRepository.save(menu), HttpStatus.CREATED);
+    }
+
+    private void checkDeleted(Set<Dish> dishes) {
+        Set<Dish> deletedDishes = new HashSet<>(dishes.stream().filter(AbstractBaseEntity::isDeleted).collect(Collectors.toSet()));
+        if (deletedDishes.size() > 0) {
+            StringBuilder stringBuilder = new StringBuilder("Dishes deleted: ");
+            deletedDishes.forEach(dish -> {
+                stringBuilder.append(dish);
+                stringBuilder.append(", ");
+            });
+            throw new EntityDeleted(stringBuilder.toString());
+        }
     }
 
     @PostMapping(path = "/unlink", produces = "application/json")
@@ -74,11 +87,9 @@ public class MenuController {
     ) {
         CheckAdmin.check();
         Menu menu = getMenu(menuId);
-        menu.setId(menuId);
-
         Set<Dish> dishes = new HashSet<Dish>((Collection) dishJpaRepository.findAll(QDish.dish.id.in(dishesIds)));
+        checkDeleted(dishes);
         menu.removeDish(dishes);
-        menu.setUser();
         return new ResponseEntity(menuJpaRepository.save(menu), HttpStatus.CREATED);
     }
 
@@ -87,7 +98,9 @@ public class MenuController {
             @PathVariable Integer id
     ) {
         CheckAdmin.check();
-        menuJpaRepository.deleteById(id);
+        Menu menu = menuJpaRepository.findById(id).get();
+        menu.delete();
+        menuJpaRepository.save(menu);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

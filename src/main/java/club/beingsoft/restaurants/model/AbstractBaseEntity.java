@@ -5,7 +5,7 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @MappedSuperclass
 // http://stackoverflow.com/questions/594597/hibernate-annotations-which-is-better-field-or-property-access
@@ -18,16 +18,21 @@ public abstract class AbstractBaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     protected Integer id;
 
-    //TODO Change club.beingsoft.restaurants.to DateTime with timezone
     @Column(name = "edit_date", nullable = false)
     @NotNull
-    protected Date editDate = new Date();
+    protected LocalDateTime editDate = LocalDateTime.now();
 
-    //@Column(name = "edit_user_id", nullable = false)
+    @Column(name = "delete_date")
+    protected LocalDateTime deleteDate;
+
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     protected User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "delete_user_id")
+    protected User delete_user;
 
     protected AbstractBaseEntity() {
     }
@@ -57,6 +62,15 @@ public abstract class AbstractBaseEntity {
 
     public boolean isNew() {
         return this.id == null;
+    }
+
+    public boolean isDeleted() {
+        return this.delete_user != null;
+    }
+
+    public void delete() {
+        this.delete_user = SecurityUtil.getAuthUser();
+        this.deleteDate = LocalDateTime.now();
     }
 
     @Override
