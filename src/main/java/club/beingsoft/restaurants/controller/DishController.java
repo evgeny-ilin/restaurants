@@ -38,7 +38,7 @@ public class DishController {
             @PathVariable Integer id,
             @RequestBody Dish dish
     ) {
-        if (id > 0) dish.setId(id);
+        if (id != null) dish.setId(id);
         dish.setUser();
         return new ResponseEntity(dishJpaRepository.save(dish), HttpStatus.CREATED);
     }

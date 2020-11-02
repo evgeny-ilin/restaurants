@@ -34,7 +34,7 @@ public class RestaurantController {
             @RequestBody Restaurant restaurant
     ) {
         CheckAdmin.check();
-        if (id > 0) restaurant.setId(id);
+        if (id != null) restaurant.setId(id);
         restaurant.setUser();
         return new ResponseEntity(restaurantJpaRepository.save(restaurant), HttpStatus.CREATED);
     }

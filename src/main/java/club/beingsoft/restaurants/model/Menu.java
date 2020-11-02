@@ -14,45 +14,33 @@ public class Menu extends AbstractBaseEntity {
     @NotNull
     private LocalDate menuDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
     private Restaurant restaurant;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "MENU_DISHES",
-            joinColumns = {@JoinColumn(name = "dish_id")},
-            inverseJoinColumns = {@JoinColumn(name = "menu_id")}
+            joinColumns = {@JoinColumn(name = "menu_id")},
+            inverseJoinColumns = {@JoinColumn(name = "dish_id")}
     )
     private Set<Dish> dishes = new HashSet<>();
 
     public Menu() {
     }
 
-    public Menu(@NotNull LocalDate menuDate, @NotNull Integer restaurantId) {
-        this(null, menuDate, restaurantId);
+    public Menu(@NotNull LocalDate menuDate, @NotNull Restaurant restaurant) {
+        this(null, menuDate, restaurant);
     }
 
-    public Menu(Integer id, @NotNull LocalDate menuDate, @NotNull Integer restaurantId) {
+    public Menu(Integer id, @NotNull LocalDate menuDate, @NotNull Restaurant restaurant) {
         super(id);
         this.menuDate = menuDate;
-        restaurant.setId(restaurantId);
-    }
-
-    public LocalDate getMenuDate() {
-        return menuDate;
-    }
-
-    public void setMenuDate(LocalDate menuDate) {
-        this.menuDate = menuDate;
+        this.restaurant = restaurant;
     }
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
-    }
-
-    public Set<Dish> getDishes() {
-        return dishes;
     }
 
     public void setDishes(Set<Dish> dishes) {

@@ -43,10 +43,10 @@ public class VoteController {
 
     @PostMapping(path = "/", produces = "application/json")
     public ResponseEntity<Object> saveVote(
-            @RequestParam(name = "restaurant") Integer restaurantId,
-            @RequestParam(name = "date") LocalDate date
+            @RequestParam(name = "restaurant") Integer restaurantId
     ) {
         Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).get();
+        LocalDate date = LocalDate.now();
 
         Optional<Vote> voteDB = voteJpaRepository.findOne(
                 QVote.vote.user.eq(SecurityUtil.getAuthUser())

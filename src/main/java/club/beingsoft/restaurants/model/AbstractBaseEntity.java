@@ -18,21 +18,23 @@ public abstract class AbstractBaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     protected Integer id;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    protected User user;
+
     @Column(name = "edit_date", nullable = false)
     @NotNull
     protected LocalDateTime editDate = LocalDateTime.now();
 
+
+    @ManyToOne
+    @JoinColumn(name = "delete_user_id")
+    protected User delete_user;
+
     @Column(name = "delete_date")
     protected LocalDateTime deleteDate;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
-    protected User user;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "delete_user_id")
-    protected User delete_user;
 
     protected AbstractBaseEntity() {
     }

@@ -46,7 +46,7 @@ public class MenuController {
             @RequestBody Menu menu
     ) {
         CheckAdmin.check();
-        if (menuId > 0) menu.setId(menuId);
+        if (menuId != null) menu.setId(menuId);
         Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).get();
         if (restaurant.isDeleted())
             throw new EntityDeleted(restaurant.getName() + " was deleted");
