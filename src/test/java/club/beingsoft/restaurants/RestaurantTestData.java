@@ -1,11 +1,9 @@
 package club.beingsoft.restaurants;
 
 import club.beingsoft.restaurants.model.Restaurant;
-import club.beingsoft.restaurants.util.SecurityUtil;
 
 import java.util.List;
 
-import static club.beingsoft.restaurants.UserTestData.USER_ADMIN;
 import static club.beingsoft.restaurants.model.AbstractBaseEntity.START_SEQ;
 
 public class RestaurantTestData {
@@ -24,7 +22,7 @@ public class RestaurantTestData {
     public static final List<Restaurant> RESTAURANTS = List.of(RESTAURANT_1, RESTAURANT_2, RESTAURANT_3, DELETED_RESTAURANT);
 
     static {
-        SecurityUtil.setAuthUser(USER_ADMIN);
+        //SecurityUtil.setAuthUser(USER_ADMIN);
         RESTAURANT_1.setUser();
         RESTAURANT_2.setUser();
         RESTAURANT_3.setUser();

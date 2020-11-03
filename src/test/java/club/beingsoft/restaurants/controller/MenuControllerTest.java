@@ -5,6 +5,7 @@ import club.beingsoft.restaurants.model.Menu;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.MustBeAdmin;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,11 @@ public class MenuControllerTest {
 
     @Autowired
     private MenuController menuController;
+
+    @Before
+    public void before() {
+        SecurityUtil.setAuthUser(USER_ADMIN);
+    }
 
     @Test
     public void getAllMenus() {
