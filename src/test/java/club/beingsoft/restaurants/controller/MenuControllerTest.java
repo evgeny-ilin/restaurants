@@ -18,8 +18,8 @@ import java.util.List;
 import static club.beingsoft.restaurants.MenuTestData.*;
 import static club.beingsoft.restaurants.RestaurantTestData.DELETED_RESTAURANT_ID;
 import static club.beingsoft.restaurants.RestaurantTestData.RESTAURANT_2_ID;
-import static club.beingsoft.restaurants.UserTestData.USER_ADMIN;
-import static club.beingsoft.restaurants.UserTestData.USER_USER;
+import static club.beingsoft.restaurants.UserTestData.ADMIN;
+import static club.beingsoft.restaurants.UserTestData.USER;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -31,7 +31,7 @@ public class MenuControllerTest {
 
     @Before
     public void before() {
-        SecurityUtil.setAuthUser(USER_ADMIN);
+        SecurityUtil.setAuthUser(ADMIN);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class MenuControllerTest {
 
     @Test
     public void saveNewMenuAdmin() {
-        SecurityUtil.setAuthUser(USER_ADMIN);
+        SecurityUtil.setAuthUser(ADMIN);
         Menu menuDB = (Menu) menuController.saveMenu(null, DELETED_RESTAURANT_ID, NEW_MENU).getBody();
         NEW_MENU.setId(menuDB.getId());
         Assert.assertEquals(NEW_MENU, menuDB);
@@ -56,46 +56,46 @@ public class MenuControllerTest {
 
     @Test
     public void updateMenuAdmin() {
-        SecurityUtil.setAuthUser(USER_ADMIN);
+        SecurityUtil.setAuthUser(ADMIN);
         Menu menuDB = (Menu) menuController.saveMenu(MENU_1_ID, DELETED_RESTAURANT_ID, MENU_1).getBody();
-        Assert.assertEquals(MenuTestData.getUpdated(), menuDB);
+        Assert.assertEquals(UPDATED_MENU, menuDB);
     }
 
     @Test
     public void saveNewMenuUser() {
-        SecurityUtil.setAuthUser(USER_USER);
+        SecurityUtil.setAuthUser(USER);
         Assert.assertThrows(PermissionException.class, () -> menuController.saveMenu(null, RESTAURANT_2_ID, NEW_MENU).getBody());
     }
 
     @Test
     public void linkDishToMenuAdmin() {
-        SecurityUtil.setAuthUser(USER_ADMIN);
+        SecurityUtil.setAuthUser(ADMIN);
         Menu menuDB = (Menu) menuController.linkDishToMenu(MENU_2_ID, DISHES_IDs).getBody();
         Assert.assertEquals(MenuTestData.getLinkedMenu(), menuDB);
     }
 
     @Test
     public void linkDishToMenuUser() {
-        SecurityUtil.setAuthUser(USER_USER);
+        SecurityUtil.setAuthUser(USER);
         Assert.assertThrows(PermissionException.class, () -> menuController.linkDishToMenu(MENU_2_ID, DISHES_IDs));
     }
 
     @Test
     public void unlinkDishFromMenuAdmin() {
-        SecurityUtil.setAuthUser(USER_ADMIN);
+        SecurityUtil.setAuthUser(ADMIN);
         Menu menuDB = (Menu) menuController.unlinkDishFromMenu(MENU_2_ID, DISHES_IDs).getBody();
         Assert.assertEquals(MenuTestData.getUnLinkedMenu(), menuDB);
     }
 
     @Test
     public void unlinkDishFromMenuUser() {
-        SecurityUtil.setAuthUser(USER_USER);
+        SecurityUtil.setAuthUser(USER);
         Assert.assertThrows(PermissionException.class, () -> menuController.unlinkDishFromMenu(MENU_2_ID, DISHES_IDs));
     }
 
     @Test
     public void deleteMenuAdmin() {
-        SecurityUtil.setAuthUser(USER_ADMIN);
+        SecurityUtil.setAuthUser(ADMIN);
         menuController.deleteMenu(DELETED_MENU_ID);
         Menu menuDB = menuController.getMenu(DELETED_MENU_ID);
         Assert.assertEquals(DELETED_MENU, menuDB);
@@ -103,7 +103,7 @@ public class MenuControllerTest {
 
     @Test
     public void deleteMenuUser() {
-        SecurityUtil.setAuthUser(USER_USER);
+        SecurityUtil.setAuthUser(USER);
         Assert.assertThrows(PermissionException.class, () -> menuController.deleteMenu(DELETED_MENU_ID));
     }
 }

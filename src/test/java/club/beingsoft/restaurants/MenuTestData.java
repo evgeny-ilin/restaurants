@@ -18,6 +18,7 @@ public class MenuTestData {
     public static int DELETED_MENU_ID = START_SEQ + 8;
     public static Menu MENU_1 = new Menu(MENU_1_ID, LocalDate.now(), RESTAURANT_1);
     public static Menu MENU_2 = new Menu(MENU_2_ID, LocalDate.now(), RESTAURANT_2);
+    public static Menu UPDATED_MENU = new Menu(MENU_1_ID, LocalDate.now(), DELETED_RESTAURANT);
     public static Menu DELETED_MENU = new Menu(DELETED_MENU_ID, LocalDate.now(), DELETED_RESTAURANT);
     public static final List<Menu> MENUS = List.of(MENU_1, MENU_2, DELETED_MENU);
     public static Menu NEW_MENU = new Menu(null, LocalDate.now(), DELETED_RESTAURANT);
@@ -32,9 +33,4 @@ public class MenuTestData {
         MENU_2.setDishes(null);
         return MENU_2;
     }
-
-    public static Menu getUpdated() {
-        return new Menu(MENU_1_ID, LocalDate.now(), DELETED_RESTAURANT);
-    }
-
 }

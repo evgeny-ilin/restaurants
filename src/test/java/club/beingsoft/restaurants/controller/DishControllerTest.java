@@ -1,6 +1,5 @@
 package club.beingsoft.restaurants.controller;
 
-import club.beingsoft.restaurants.DishTestData;
 import club.beingsoft.restaurants.model.Dish;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.PermissionException;
@@ -16,8 +15,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 import static club.beingsoft.restaurants.DishTestData.*;
-import static club.beingsoft.restaurants.UserTestData.USER_ADMIN;
-import static club.beingsoft.restaurants.UserTestData.USER_USER;
+import static club.beingsoft.restaurants.UserTestData.ADMIN;
+import static club.beingsoft.restaurants.UserTestData.USER;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -29,7 +28,7 @@ public class DishControllerTest {
 
     @Before
     public void before() {
-        SecurityUtil.setAuthUser(USER_ADMIN);
+        SecurityUtil.setAuthUser(ADMIN);
     }
 
     @Test
@@ -53,14 +52,14 @@ public class DishControllerTest {
 
     @Test
     public void saveDishUser() {
-        SecurityUtil.setAuthUser(USER_USER);
+        SecurityUtil.setAuthUser(USER);
         Assert.assertThrows(PermissionException.class, () -> dishController.saveDish(null, NEW_DISH).getBody());
     }
 
     @Test
     public void updateDish() {
-        Dish dishDB = (Dish) dishController.saveDish(DISH_3_ID, DishTestData.getUpdated()).getBody();
-        Assert.assertEquals(DishTestData.getUpdated(), dishDB);
+        Dish dishDB = (Dish) dishController.saveDish(DISH_3_ID, UPDATED_DISH).getBody();
+        Assert.assertEquals(UPDATED_DISH, dishDB);
     }
 
     @Test
@@ -72,7 +71,7 @@ public class DishControllerTest {
 
     @Test
     public void deleteDishUser() {
-        SecurityUtil.setAuthUser(USER_USER);
+        SecurityUtil.setAuthUser(USER);
         Assert.assertThrows(PermissionException.class, () -> dishController.deleteDish(DELETED_DISH_ID));
     }
 }

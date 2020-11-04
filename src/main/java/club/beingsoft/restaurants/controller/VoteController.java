@@ -50,7 +50,9 @@ public class VoteController {
 
         Optional<Vote> voteDB = voteJpaRepository.findOne(
                 QVote.vote.user.eq(SecurityUtil.getAuthUser())
-                        .and(QVote.vote.voteDate.eq(date)));
+                        .and(QVote.vote.voteDate.eq(date))
+                        .and(QVote.vote.restaurant.eq(restaurant))
+        );
         Vote vote;
         if (voteDB.isPresent()) {
             vote = voteDB.get();
