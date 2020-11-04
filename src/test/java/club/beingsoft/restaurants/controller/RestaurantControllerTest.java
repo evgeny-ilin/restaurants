@@ -3,7 +3,7 @@ package club.beingsoft.restaurants.controller;
 import club.beingsoft.restaurants.RestaurantTestData;
 import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.util.SecurityUtil;
-import club.beingsoft.restaurants.util.exception.MustBeAdmin;
+import club.beingsoft.restaurants.util.exception.PermissionException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class RestaurantControllerTest {
     @Test
     public void saveRestaurantUser() {
         SecurityUtil.setAuthUser(USER_USER);
-        Assert.assertThrows(MustBeAdmin.class, () -> restaurantController.saveRestaurant(null, NEW_RESTAURANT).getBody());
+        Assert.assertThrows(PermissionException.class, () -> restaurantController.saveRestaurant(null, NEW_RESTAURANT).getBody());
     }
 
 
@@ -77,6 +77,6 @@ public class RestaurantControllerTest {
     @Test
     public void deleteRestaurantUser() {
         SecurityUtil.setAuthUser(USER_USER);
-        Assert.assertThrows(MustBeAdmin.class, () -> restaurantController.deleteRestaurant(DELETED_RESTAURANT_ID));
+        Assert.assertThrows(PermissionException.class, () -> restaurantController.deleteRestaurant(DELETED_RESTAURANT_ID));
     }
 }

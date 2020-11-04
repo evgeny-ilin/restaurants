@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class Dish extends AbstractNamedEntity {
 
     public Dish(Integer id, Menu menu, String name, BigDecimal price) {
         super(id, name);
-        this.price = price;
+        this.price = price.setScale(2, RoundingMode.HALF_UP);
     }
 
     @Override

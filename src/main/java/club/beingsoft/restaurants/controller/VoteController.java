@@ -6,7 +6,7 @@ import club.beingsoft.restaurants.model.Vote;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.VoteJpaRepository;
 import club.beingsoft.restaurants.util.SecurityUtil;
-import club.beingsoft.restaurants.util.exception.VoteCantBeChanged;
+import club.beingsoft.restaurants.util.exception.VoteCantBeChangedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +59,7 @@ public class VoteController {
             if (!(deadLine.isAfter(midnightDayBefore)
                     && deadLine.isAfter(LocalDateTime.now()))
             )
-                throw new VoteCantBeChanged("Vote can't be changed");
+                throw new VoteCantBeChangedException("Vote can't be changed");
             vote.setRestaurant(restaurant);
         } else
             vote = new Vote(restaurant, date);

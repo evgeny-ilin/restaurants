@@ -6,6 +6,7 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @MappedSuperclass
 // http://stackoverflow.com/questions/594597/hibernate-annotations-which-is-better-field-or-property-access
@@ -25,7 +26,7 @@ public abstract class AbstractBaseEntity {
 
     @Column(name = "edit_date", nullable = false)
     @NotNull
-    protected LocalDateTime editDate = LocalDateTime.now();
+    protected LocalDateTime editDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
 
     @ManyToOne

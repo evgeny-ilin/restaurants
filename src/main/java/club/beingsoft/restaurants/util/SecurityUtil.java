@@ -5,7 +5,6 @@ import club.beingsoft.restaurants.model.User;
 
 public class SecurityUtil {
 
-    //private static int id = AbstractBaseEntity.START_SEQ;
     private static int id = 1;
 
     private static User user = new User(id, "user1", "user1@yandex.ru", "password", Role.ADMIN);

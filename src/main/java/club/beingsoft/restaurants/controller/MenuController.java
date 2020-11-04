@@ -4,8 +4,8 @@ import club.beingsoft.restaurants.model.*;
 import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
-import club.beingsoft.restaurants.util.CheckAdmin;
-import club.beingsoft.restaurants.util.exception.EntityDeleted;
+import club.beingsoft.restaurants.util.CheckPermissions;
+import club.beingsoft.restaurants.util.exception.EntityNotDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,11 +45,11 @@ public class MenuController {
             @RequestParam(name = "restaurant") Integer restaurantId,
             @RequestBody Menu menu
     ) {
-        CheckAdmin.check();
+        CheckPermissions.checkAdmin();
         if (menuId != null) menu.setId(menuId);
         Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).get();
         if (restaurant.isDeleted())
-            throw new EntityDeleted(restaurant.getName() + " was deleted");
+            throw new EntityNotDeletedException(restaurant.getName() + " was deleted");
         menu.setRestaurant(restaurant);
         menu.setUser();
         return new ResponseEntity(menuJpaRepository.save(menu), HttpStatus.CREATED);
@@ -60,7 +60,7 @@ public class MenuController {
             @RequestParam(name = "menuId") Integer menuId,
             @RequestParam(name = "dishesIds") List<Integer> dishesIds
     ) {
-        CheckAdmin.check();
+        CheckPermissions.checkAdmin();
         Menu menu = getMenu(menuId);
         Set<Dish> dishes = new HashSet<Dish>((Collection) dishJpaRepository.findAll(QDish.dish.id.in(dishesIds)));
         checkDeleted(dishes);
@@ -76,7 +76,7 @@ public class MenuController {
                 stringBuilder.append(dish);
                 stringBuilder.append(", ");
             });
-            throw new EntityDeleted(stringBuilder.toString());
+            throw new EntityNotDeletedException(stringBuilder.toString());
         }
     }
 
@@ -85,7 +85,7 @@ public class MenuController {
             @RequestParam(name = "menuId") Integer menuId,
             @RequestParam(name = "dishesIds") List<Integer> dishesIds
     ) {
-        CheckAdmin.check();
+        CheckPermissions.checkAdmin();
         Menu menu = getMenu(menuId);
         Set<Dish> dishes = new HashSet<Dish>((Collection) dishJpaRepository.findAll(QDish.dish.id.in(dishesIds)));
         checkDeleted(dishes);
@@ -97,7 +97,7 @@ public class MenuController {
     public ResponseEntity deleteMenu(
             @PathVariable Integer id
     ) {
-        CheckAdmin.check();
+        CheckPermissions.checkAdmin();
         Menu menu = menuJpaRepository.findById(id).get();
         menu.delete();
         menuJpaRepository.save(menu);

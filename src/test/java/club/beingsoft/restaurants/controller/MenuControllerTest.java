@@ -3,7 +3,7 @@ package club.beingsoft.restaurants.controller;
 import club.beingsoft.restaurants.MenuTestData;
 import club.beingsoft.restaurants.model.Menu;
 import club.beingsoft.restaurants.util.SecurityUtil;
-import club.beingsoft.restaurants.util.exception.MustBeAdmin;
+import club.beingsoft.restaurants.util.exception.PermissionException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +64,7 @@ public class MenuControllerTest {
     @Test
     public void saveNewMenuUser() {
         SecurityUtil.setAuthUser(USER_USER);
-        Assert.assertThrows(MustBeAdmin.class, () -> menuController.saveMenu(null, RESTAURANT_2_ID, NEW_MENU).getBody());
+        Assert.assertThrows(PermissionException.class, () -> menuController.saveMenu(null, RESTAURANT_2_ID, NEW_MENU).getBody());
     }
 
     @Test
@@ -77,7 +77,7 @@ public class MenuControllerTest {
     @Test
     public void linkDishToMenuUser() {
         SecurityUtil.setAuthUser(USER_USER);
-        Assert.assertThrows(MustBeAdmin.class, () -> menuController.linkDishToMenu(MENU_2_ID, DISHES_IDs));
+        Assert.assertThrows(PermissionException.class, () -> menuController.linkDishToMenu(MENU_2_ID, DISHES_IDs));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class MenuControllerTest {
     @Test
     public void unlinkDishFromMenuUser() {
         SecurityUtil.setAuthUser(USER_USER);
-        Assert.assertThrows(MustBeAdmin.class, () -> menuController.unlinkDishFromMenu(MENU_2_ID, DISHES_IDs));
+        Assert.assertThrows(PermissionException.class, () -> menuController.unlinkDishFromMenu(MENU_2_ID, DISHES_IDs));
     }
 
     @Test
@@ -104,6 +104,6 @@ public class MenuControllerTest {
     @Test
     public void deleteMenuUser() {
         SecurityUtil.setAuthUser(USER_USER);
-        Assert.assertThrows(MustBeAdmin.class, () -> menuController.deleteMenu(DELETED_MENU_ID));
+        Assert.assertThrows(PermissionException.class, () -> menuController.deleteMenu(DELETED_MENU_ID));
     }
 }
