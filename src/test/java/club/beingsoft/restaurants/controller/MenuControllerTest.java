@@ -3,6 +3,7 @@ package club.beingsoft.restaurants.controller;
 import club.beingsoft.restaurants.MenuTestData;
 import club.beingsoft.restaurants.model.Menu;
 import club.beingsoft.restaurants.util.SecurityUtil;
+import club.beingsoft.restaurants.util.exception.NotFoundException;
 import club.beingsoft.restaurants.util.exception.PermissionException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,11 +48,35 @@ public class MenuControllerTest {
     }
 
     @Test
-    public void saveNewMenuAdmin() {
-        SecurityUtil.setAuthUser(ADMIN);
+    public void getMenuNullId() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.getMenu(null));
+    }
+
+    @Test
+    public void getMenuNotFound() {
+        Assert.assertThrows(NotFoundException.class, () -> menuController.getMenu(NOT_FOUND_ID));
+    }
+
+    @Test
+    public void saveNewMenu() {
         Menu menuDB = (Menu) menuController.saveMenu(null, DELETED_RESTAURANT_ID, NEW_MENU).getBody();
         NEW_MENU.setId(menuDB.getId());
         Assert.assertEquals(NEW_MENU, menuDB);
+    }
+
+    @Test
+    public void saveNewNullMenu() {
+        Assert.assertThrows(NotFoundException.class, () -> menuController.saveMenu(null, DELETED_RESTAURANT_ID, null));
+    }
+
+    @Test
+    public void saveNewRestaurantNotFound() {
+        Assert.assertThrows(NotFoundException.class, () -> menuController.saveMenu(null, NOT_FOUND_ID, NEW_MENU));
+    }
+
+    @Test
+    public void saveNewNullRestaurant() {
+        Assert.assertThrows(NotFoundException.class, () -> menuController.saveMenu(null, null, NEW_MENU));
     }
 
     @Test

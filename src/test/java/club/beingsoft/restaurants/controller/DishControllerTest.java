@@ -2,6 +2,8 @@ package club.beingsoft.restaurants.controller;
 
 import club.beingsoft.restaurants.model.Dish;
 import club.beingsoft.restaurants.util.SecurityUtil;
+import club.beingsoft.restaurants.util.exception.EntityNotDeletedException;
+import club.beingsoft.restaurants.util.exception.NotFoundException;
 import club.beingsoft.restaurants.util.exception.PermissionException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,10 +46,25 @@ public class DishControllerTest {
     }
 
     @Test
+    public void getDishNullId() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> dishController.getDish(null));
+    }
+
+    @Test
+    public void getDishNotFound() {
+        Assert.assertThrows(NotFoundException.class, () -> dishController.getDish(NOT_FOUND_ID));
+    }
+
+    @Test
     public void saveNewDish() {
         Dish dishDB = (Dish) dishController.saveDish(null, NEW_DISH).getBody();
         NEW_DISH.setId(dishDB.getId());
         Assert.assertEquals(NEW_DISH, dishDB);
+    }
+
+    @Test
+    public void saveNewNullDish() {
+        Assert.assertThrows(NotFoundException.class, () -> dishController.saveDish(null, null));
     }
 
     @Test
@@ -67,6 +84,16 @@ public class DishControllerTest {
         dishController.deleteDish(DELETED_DISH_ID);
         Dish dishDB = dishController.getDish(DELETED_DISH_ID);
         Assert.assertEquals(DELETED_DISH, dishDB);
+    }
+
+    @Test
+    public void deleteDishNotFound() {
+        Assert.assertThrows(NotFoundException.class, () -> dishController.deleteDish(NOT_FOUND_ID));
+    }
+
+    @Test
+    public void deleteDishInMenu() {
+        Assert.assertThrows(EntityNotDeletedException.class, () -> dishController.deleteDish(DISH_1_ID));
     }
 
     @Test

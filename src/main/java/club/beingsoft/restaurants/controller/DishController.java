@@ -5,7 +5,6 @@ import club.beingsoft.restaurants.model.Menu;
 import club.beingsoft.restaurants.model.QMenu;
 import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
-import club.beingsoft.restaurants.util.CheckPermissions;
 import club.beingsoft.restaurants.util.exception.EntityNotDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
+import static club.beingsoft.restaurants.util.ValidationUtil.*;
 
 @RestController
 @RequestMapping(path = "/rest/dishes")
@@ -24,6 +26,8 @@ public class DishController {
     @Autowired
     private MenuJpaRepository menuJpaRepository;
 
+    private static final String DISH_ENTITY = "Dish";
+
     @GetMapping(produces = "application/json")
     public List<Dish> getAllDishes() {
         return dishJpaRepository.findAll();
@@ -31,7 +35,10 @@ public class DishController {
 
     @GetMapping(path = "/{id}", produces = "application/json")
     public Dish getDish(@PathVariable Integer id) {
-        return dishJpaRepository.findById(id).get();
+        checkId(DISH_ENTITY, id);
+        Optional<Dish> dishDB = dishJpaRepository.findById(id);
+        checkEntityNotNull(DISH_ENTITY, dishDB, id);
+        return dishDB.get();
     }
 
     @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
@@ -39,17 +46,21 @@ public class DishController {
             @PathVariable Integer id,
             @RequestBody Dish dish
     ) {
-        CheckPermissions.checkAdmin();
+        checkAdmin();
+        checkEntityNotNull(DISH_ENTITY, dish, id);
+
         if (id != null) dish.setId(id);
         dish.setUser();
-        return new ResponseEntity(dishJpaRepository.save(dish), HttpStatus.CREATED);
+        return new ResponseEntity(checkEntityNotNull(DISH_ENTITY, dishJpaRepository.save(dish), id), HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity deleteDish(
             @PathVariable Integer id
     ) {
-        CheckPermissions.checkAdmin();
+        checkAdmin();
+        checkId(DISH_ENTITY, id);
+
         Dish dish = getDish(id);
         List<Menu> menus = (List<Menu>) menuJpaRepository.findAll(
                 QMenu.menu.dishes
@@ -57,11 +68,12 @@ public class DishController {
                         .and(QMenu.menu.delete_user.isNull())
         );
         if (menus.size() > 0) {
-            StringBuilder stringBuilder = new StringBuilder("Menu NOT deleted: ");
+            StringBuilder stringBuilder = new StringBuilder("Dish NOT deleted cause it's in menu: ");
             menus.forEach(menu -> {
                 stringBuilder.append(menu);
                 stringBuilder.append(", ");
             });
+            stringBuilder.delete(stringBuilder.lastIndexOf(","), stringBuilder.length());
             throw new EntityNotDeletedException(stringBuilder.toString());
         }
         dish.delete();
