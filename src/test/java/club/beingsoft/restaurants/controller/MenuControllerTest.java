@@ -3,6 +3,7 @@ package club.beingsoft.restaurants.controller;
 import club.beingsoft.restaurants.MenuTestData;
 import club.beingsoft.restaurants.model.Menu;
 import club.beingsoft.restaurants.util.SecurityUtil;
+import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
 import club.beingsoft.restaurants.util.exception.PermissionException;
 import org.junit.Assert;
@@ -16,9 +17,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
+import static club.beingsoft.restaurants.DishTestData.DELETED_DISH_ID;
 import static club.beingsoft.restaurants.MenuTestData.*;
-import static club.beingsoft.restaurants.RestaurantTestData.DELETED_RESTAURANT_ID;
-import static club.beingsoft.restaurants.RestaurantTestData.RESTAURANT_2_ID;
+import static club.beingsoft.restaurants.RestaurantTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
 import static club.beingsoft.restaurants.UserTestData.USER;
 
@@ -59,14 +60,20 @@ public class MenuControllerTest {
 
     @Test
     public void saveNewMenu() {
-        Menu menuDB = (Menu) menuController.saveMenu(null, DELETED_RESTAURANT_ID, NEW_MENU).getBody();
+        Menu menuDB = (Menu) menuController.saveMenu(null, RESTAURANT_3_ID, NEW_MENU).getBody();
         NEW_MENU.setId(menuDB.getId());
         Assert.assertEquals(NEW_MENU, menuDB);
     }
 
     @Test
+    public void saveDoubleMenu() {
+        menuController.saveMenu(null, RESTAURANT_3_ID, NEW_MENU).getBody();
+        Assert.assertThrows(NotFoundException.class, () -> menuController.saveMenu(null, RESTAURANT_3_ID, NEW_MENU).getBody());
+    }
+
+    @Test
     public void saveNewNullMenu() {
-        Assert.assertThrows(NotFoundException.class, () -> menuController.saveMenu(null, DELETED_RESTAURANT_ID, null));
+        Assert.assertThrows(NotFoundException.class, () -> menuController.saveMenu(null, RESTAURANT_3_ID, null));
     }
 
     @Test
@@ -76,13 +83,17 @@ public class MenuControllerTest {
 
     @Test
     public void saveNewNullRestaurant() {
-        Assert.assertThrows(NotFoundException.class, () -> menuController.saveMenu(null, null, NEW_MENU));
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.saveMenu(null, null, NEW_MENU));
     }
 
     @Test
-    public void updateMenuAdmin() {
-        SecurityUtil.setAuthUser(ADMIN);
-        Menu menuDB = (Menu) menuController.saveMenu(MENU_1_ID, DELETED_RESTAURANT_ID, MENU_1).getBody();
+    public void saveNewDeletedRestaurant() {
+        Assert.assertThrows(EntityDeletedException.class, () -> menuController.saveMenu(null, DELETED_RESTAURANT_ID, NEW_MENU));
+    }
+
+    @Test
+    public void updateMenu() {
+        Menu menuDB = (Menu) menuController.saveMenu(MENU_1_ID, RESTAURANT_2_ID, MENU_1).getBody();
         Assert.assertEquals(UPDATED_MENU, menuDB);
     }
 
@@ -93,10 +104,29 @@ public class MenuControllerTest {
     }
 
     @Test
-    public void linkDishToMenuAdmin() {
-        SecurityUtil.setAuthUser(ADMIN);
+    public void linkDishToMenu() {
         Menu menuDB = (Menu) menuController.linkDishToMenu(MENU_2_ID, DISHES_IDs).getBody();
         Assert.assertEquals(MenuTestData.getLinkedMenu(), menuDB);
+    }
+
+    @Test
+    public void linkDishToMenuNullId() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(null, DISHES_IDs).getBody());
+    }
+
+    @Test
+    public void linkDishToMenuNotFoundDishes() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(MENU_2_ID, List.of(NOT_FOUND_ID)).getBody());
+    }
+
+    @Test
+    public void linkDishToMenuDeletedMenu() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(DELETED_MENU_ID, DISHES_IDs).getBody());
+    }
+
+    @Test
+    public void linkDishToMenuDeletedDish() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(null, List.of(DELETED_DISH_ID)).getBody());
     }
 
     @Test
@@ -106,8 +136,27 @@ public class MenuControllerTest {
     }
 
     @Test
-    public void unlinkDishFromMenuAdmin() {
-        SecurityUtil.setAuthUser(ADMIN);
+    public void unlinkDishToMenuNullId() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.unlinkDishFromMenu(null, DISHES_IDs).getBody());
+    }
+
+    @Test
+    public void unlinkDishToMenuNotFoundDishes() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.unlinkDishFromMenu(MENU_2_ID, List.of(NOT_FOUND_ID)).getBody());
+    }
+
+    @Test
+    public void unlinkDishToMenuDeletedMenu() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.unlinkDishFromMenu(DELETED_MENU_ID, DISHES_IDs).getBody());
+    }
+
+    @Test
+    public void unlinkDishToMenuDeletedDish() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.unlinkDishFromMenu(null, List.of(DELETED_DISH_ID)).getBody());
+    }
+
+    @Test
+    public void unlinkDishFromMenu() {
         Menu menuDB = (Menu) menuController.unlinkDishFromMenu(MENU_2_ID, DISHES_IDs).getBody();
         Assert.assertEquals(MenuTestData.getUnLinkedMenu(), menuDB);
     }
@@ -119,11 +168,20 @@ public class MenuControllerTest {
     }
 
     @Test
-    public void deleteMenuAdmin() {
-        SecurityUtil.setAuthUser(ADMIN);
+    public void deleteMenu() {
         menuController.deleteMenu(DELETED_MENU_ID);
         Menu menuDB = menuController.getMenu(DELETED_MENU_ID);
         Assert.assertEquals(DELETED_MENU, menuDB);
+    }
+
+    @Test
+    public void deleteMenuNullId() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.deleteMenu(null));
+    }
+
+    @Test
+    public void deleteMenuNotFound() {
+        Assert.assertThrows(NotFoundException.class, () -> menuController.deleteMenu(NOT_FOUND_ID));
     }
 
     @Test

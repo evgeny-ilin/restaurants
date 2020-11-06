@@ -44,8 +44,7 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    public void saveNewRestaurantAdmin() {
-        SecurityUtil.setAuthUser(ADMIN);
+    public void saveNewRestaurant() {
         Restaurant restaurantDB = (Restaurant) restaurantController.saveRestaurant(null, NEW_RESTAURANT).getBody();
         NEW_RESTAURANT.setId(restaurantDB.getId());
         Assert.assertEquals(NEW_RESTAURANT, restaurantDB);
@@ -59,15 +58,13 @@ public class RestaurantControllerTest {
 
 
     @Test
-    public void updateRestaurantAdmin() {
-        SecurityUtil.setAuthUser(ADMIN);
+    public void updateRestaurant() {
         Restaurant restaurantDB = (Restaurant) restaurantController.saveRestaurant(RESTAURANT_3_ID, UPDATED_RESTAURANT).getBody();
         Assert.assertEquals(UPDATED_RESTAURANT, restaurantDB);
     }
 
     @Test
-    public void deleteRestaurantAdmin() {
-        SecurityUtil.setAuthUser(ADMIN);
+    public void deleteRestaurant() {
         restaurantController.deleteRestaurant(DELETED_RESTAURANT_ID);
         Restaurant restaurantDB = restaurantController.getRestaurant(DELETED_RESTAURANT_ID);
         Assert.assertEquals(DELETED_RESTAURANT, restaurantDB);

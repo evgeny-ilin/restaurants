@@ -17,7 +17,7 @@ public class RestaurantTestData {
     public static final Restaurant RESTAURANT_2 = new Restaurant(RESTAURANT_2_ID, "RESTAURANT-TEST-2");
     public static final Restaurant RESTAURANT_3 = new Restaurant(RESTAURANT_3_ID, "RESTAURANT-TEST-3");
     public static final Restaurant UPDATED_RESTAURANT = new Restaurant(RESTAURANT_3_ID, "RESTAURANT-UPDATED");
-    public static final Restaurant DELETED_RESTAURANT = new Restaurant(DELETED_RESTAURANT_ID, "RESTAURANT-TEST-4");
+    public static final Restaurant DELETED_RESTAURANT = new Restaurant(DELETED_RESTAURANT_ID, "DELETED-RESTAURANT-TEST");
     public static final Restaurant NEW_RESTAURANT = new Restaurant(null, "RESTAURANT-TEST-NEW");
 
     public static final List<Restaurant> RESTAURANTS = List.of(RESTAURANT_1, RESTAURANT_2, RESTAURANT_3, DELETED_RESTAURANT);

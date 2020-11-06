@@ -2,7 +2,7 @@ package club.beingsoft.restaurants.controller;
 
 import club.beingsoft.restaurants.model.Dish;
 import club.beingsoft.restaurants.util.SecurityUtil;
-import club.beingsoft.restaurants.util.exception.EntityNotDeletedException;
+import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
 import club.beingsoft.restaurants.util.exception.PermissionException;
 import org.junit.Assert;
@@ -93,7 +93,7 @@ public class DishControllerTest {
 
     @Test
     public void deleteDishInMenu() {
-        Assert.assertThrows(EntityNotDeletedException.class, () -> dishController.deleteDish(DISH_1_ID));
+        Assert.assertThrows(EntityDeletedException.class, () -> dishController.deleteDish(DISH_1_ID));
     }
 
     @Test

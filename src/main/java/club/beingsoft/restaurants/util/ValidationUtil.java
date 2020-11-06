@@ -4,9 +4,10 @@ import club.beingsoft.restaurants.model.AbstractBaseEntity;
 import club.beingsoft.restaurants.model.Dish;
 import club.beingsoft.restaurants.model.Role;
 import club.beingsoft.restaurants.model.User;
-import club.beingsoft.restaurants.util.exception.EntityNotDeletedException;
+import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
 import club.beingsoft.restaurants.util.exception.PermissionException;
+import org.springframework.util.Assert;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -45,7 +46,11 @@ public class ValidationUtil {
             throw new PermissionException("You don't have permission on this operation");
     }
 
-    public static void checkDeleted(Set<Dish> dishes) {
+    public static void checkEntityDelete(AbstractBaseEntity entity) {
+        Assert.isTrue(entity.isDeleted(), "Entity " + entity.getClass().getName() + " is deleted");
+    }
+
+    public static void checkDishDeleted(Set<Dish> dishes) {
         Set<Dish> deletedDishes = new HashSet<>(dishes.stream().filter(AbstractBaseEntity::isDeleted).collect(Collectors.toSet()));
         if (deletedDishes.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder("Dishes deleted: ");
@@ -53,7 +58,7 @@ public class ValidationUtil {
                 stringBuilder.append(dish);
                 stringBuilder.append(", ");
             });
-            throw new EntityNotDeletedException(stringBuilder.toString());
+            throw new EntityDeletedException(stringBuilder.toString());
         }
     }
 }

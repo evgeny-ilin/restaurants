@@ -3,6 +3,7 @@ package club.beingsoft.restaurants;
 import club.beingsoft.restaurants.model.Dish;
 import club.beingsoft.restaurants.model.Menu;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +23,21 @@ public class MenuTestData {
     public static Menu UPDATED_MENU = new Menu(MENU_1_ID, LocalDate.now(), DELETED_RESTAURANT);
     public static Menu DELETED_MENU = new Menu(DELETED_MENU_ID, LocalDate.now(), DELETED_RESTAURANT);
     public static final List<Menu> MENUS = List.of(MENU_1, MENU_2, DELETED_MENU);
-    public static Menu NEW_MENU = new Menu(null, LocalDate.now(), DELETED_RESTAURANT);
+    public static Menu NEW_MENU = new Menu(null, LocalDate.now(), RESTAURANT_2);
+
+    static {
+        Field menuDateField = null;
+        try {
+            menuDateField = MENU_2.getClass().getDeclaredField("menuDate");
+            menuDateField.setAccessible(true);
+            LocalDate date = LocalDate.now().minusDays(1);
+            menuDateField.set(MENU_2, date);
+            menuDateField.setAccessible(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        DELETED_MENU.delete();
+    }
 
     public static Menu getLinkedMenu() {
         Set<Dish> dishes = Set.of(DISH_1, DISH_2);

@@ -7,7 +7,7 @@ import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
-import club.beingsoft.restaurants.util.exception.EntityNotDeletedException;
+import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,19 +51,20 @@ public class MenuController {
             @RequestBody Menu menu
     ) {
         checkAdmin();
+        checkEntityNotNull(MENU_ENTITY, menu, menuId);
         if (menuId != null) menu.setId(menuId);
+        checkId("Restaurant", restaurantId);
         Optional<Restaurant> restaurantDB = restaurantJpaRepository.findById(restaurantId);
         checkEntityNotNull("Restaurant", restaurantDB, restaurantId);
         Restaurant restaurant = restaurantDB.get();
 
         if (restaurant.isDeleted())
-            throw new EntityNotDeletedException(restaurant.getName() + " was deleted");
+            throw new EntityDeletedException(restaurant.getName() + " was deleted");
         menu.setRestaurant(restaurant);
         menu.setUser();
         return new ResponseEntity(checkEntityNotNull(MENU_ENTITY, menuJpaRepository.save(menu), menuId), HttpStatus.CREATED);
     }
 
-    //TODO make tests
     @PostMapping(path = "/link", produces = "application/json")
     public ResponseEntity<Object> linkDishToMenu(
             @RequestParam(name = "menuId") Integer menuId,
@@ -73,14 +74,14 @@ public class MenuController {
         checkId(MENU_ENTITY, menuId);
         checkCollectionFound("DISHES IDs", dishesIds);
         Menu menu = getMenu(menuId);
+        checkEntityDelete(menu);
         Set<Dish> dishes = new HashSet<Dish>((Collection) dishJpaRepository.findAll(QDish.dish.id.in(dishesIds)));
         checkCollectionFound("DISHES", dishes);
-        checkDeleted(dishes);
+        checkDishDeleted(dishes);
         menu.setDishes(dishes);
         return new ResponseEntity(checkEntityNotNull(MENU_ENTITY, menuJpaRepository.save(menu), menuId), HttpStatus.CREATED);
     }
 
-    //TODO make tests
     @PostMapping(path = "/unlink", produces = "application/json")
     public ResponseEntity<Object> unlinkDishFromMenu(
             @RequestParam(name = "menuId") Integer menuId,
@@ -89,16 +90,15 @@ public class MenuController {
         checkAdmin();
         checkId(MENU_ENTITY, menuId);
         checkCollectionFound("DISHES IDs", dishesIds);
-
         Menu menu = getMenu(menuId);
+        checkEntityDelete(menu);
         Set<Dish> dishes = new HashSet<Dish>((Collection) dishJpaRepository.findAll(QDish.dish.id.in(dishesIds)));
         checkCollectionFound("DISHES", dishes);
-        checkDeleted(dishes);
+        checkDishDeleted(dishes);
         menu.removeDish(dishes);
-        return new ResponseEntity(menuJpaRepository.save(menu), HttpStatus.CREATED);
+        return new ResponseEntity(checkEntityNotNull(MENU_ENTITY, menuJpaRepository.save(menu), menuId), HttpStatus.CREATED);
     }
 
-    //TODO make tests
     @DeleteMapping(path = "/{id}")
     public ResponseEntity deleteMenu(
             @PathVariable Integer id
