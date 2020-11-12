@@ -1,5 +1,6 @@
 package club.beingsoft.restaurants.model;
 
+import club.beingsoft.restaurants.util.FieldUtil;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -7,8 +8,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -30,9 +31,9 @@ public class User extends AbstractNamedEntity {
     @Column(name = "enabled", nullable = false)
     private boolean enabled = true;
 
-    @Column(name = "registered", nullable = false)
+    @Column(name = "registered", nullable = false, columnDefinition = "timestamp default sysdate")
     @NotNull
-    private Date registered = new Date();
+    private LocalDateTime registered = FieldUtil.getSysdate();
 
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
@@ -49,10 +50,10 @@ public class User extends AbstractNamedEntity {
     }
 
     public User(Integer id, String name, String email, String password, Role role, Role... roles) {
-        this(id, name, email, password, true, new Date(), EnumSet.of(role, roles));
+        this(id, name, email, password, true, FieldUtil.getSysdate(), EnumSet.of(role, roles));
     }
 
-    public User(Integer id, String name, String email, String password, boolean enabled, Date registered, Collection<Role> roles) {
+    public User(Integer id, String name, String email, String password, boolean enabled, LocalDateTime registered, Collection<Role> roles) {
         super(id, name);
         this.email = email;
         this.password = password;
@@ -65,16 +66,8 @@ public class User extends AbstractNamedEntity {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Date getRegistered() {
+    public LocalDateTime getRegistered() {
         return registered;
-    }
-
-    public void setRegistered(Date registered) {
-        this.registered = registered;
     }
 
     public boolean isEnabled() {
@@ -97,18 +90,12 @@ public class User extends AbstractNamedEntity {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
+        return super.toString() +
                 ", email=" + email +
                 ", name=" + name +
                 ", enabled=" + enabled +
-                ", roles=" + roles +
-                '}';
+                ", roles=" + roles;
     }
 }

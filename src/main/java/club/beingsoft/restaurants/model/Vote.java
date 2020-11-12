@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "restaurant_id", "vote_date"}, name = "votes_unique_user_restaurant_idx")})
+@Table(name = "votes")
 public class Vote extends AbstractBaseEntity {
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)

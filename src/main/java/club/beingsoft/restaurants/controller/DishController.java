@@ -2,6 +2,7 @@ package club.beingsoft.restaurants.controller;
 
 import club.beingsoft.restaurants.model.Dish;
 import club.beingsoft.restaurants.model.Menu;
+import club.beingsoft.restaurants.model.QDish;
 import club.beingsoft.restaurants.model.QMenu;
 import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +39,11 @@ public class DishController {
     @GetMapping(path = "/{id}", produces = "application/json")
     public Dish getDish(@PathVariable Integer id) {
         checkId(DISH_ENTITY, id);
-        Optional<Dish> dishDB = dishJpaRepository.findById(id);
+        LocalDateTime dateTime = LocalDateTime.now();
+        Optional<Dish> dishDB = dishJpaRepository.findOne(
+                QDish.dish.startDate.before(dateTime)
+                        .and(QDish.dish.endDate.after(dateTime))
+        );
         checkEntityNotNull(DISH_ENTITY, dishDB, id);
         return dishDB.get();
     }
@@ -55,17 +62,28 @@ public class DishController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @Transactional
     public ResponseEntity deleteDish(
             @PathVariable Integer id
     ) {
         checkAdmin();
         checkId(DISH_ENTITY, id);
-
         Dish dish = getDish(id);
+        checkDishInActiveMenu(dish);
+        Dish nextRec = (Dish) dish.changeHistory();
+        nextRec.delete();
+        dishJpaRepository.save(dish);
+        dishJpaRepository.save(nextRec);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    private void checkDishInActiveMenu(Dish dish) {
+        LocalDateTime dateTime = LocalDateTime.now();
         List<Menu> menus = (List<Menu>) menuJpaRepository.findAll(
                 QMenu.menu.dishes
                         .contains(dish)
-                        .and(QMenu.menu.delete_user.isNull())
+                        .and(QMenu.menu.startDate.before(dateTime))
+                        .and(QMenu.menu.endDate.after(dateTime))
         );
         if (menus.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder("Dish NOT deleted cause it's in menu: ");
@@ -76,8 +94,5 @@ public class DishController {
             stringBuilder.delete(stringBuilder.lastIndexOf(","), stringBuilder.length());
             throw new EntityDeletedException(stringBuilder.toString());
         }
-        dish.delete();
-        dishJpaRepository.save(dish);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

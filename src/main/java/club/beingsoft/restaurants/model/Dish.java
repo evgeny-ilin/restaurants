@@ -2,14 +2,17 @@ package club.beingsoft.restaurants.model;
 
 import org.hibernate.validator.constraints.Range;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "unique_dish_name_idx")})
+@Table(name = "dishes")
 public class Dish extends AbstractNamedEntity {
 
     @Column(name = "price", nullable = false)
@@ -33,12 +36,8 @@ public class Dish extends AbstractNamedEntity {
 
     @Override
     public String toString() {
-        return "Dish {" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", editUser=" + user +
-                ", editDate=" + editDate +
-                '}';
+        return super.toString() +
+                "price=" + price +
+                ", menus=" + menus;
     }
 }
