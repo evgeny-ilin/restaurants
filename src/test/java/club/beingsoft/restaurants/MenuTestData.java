@@ -23,10 +23,10 @@ public class MenuTestData {
     public static Menu UPDATED_MENU = new Menu(MENU_1_ID, LocalDate.now(), DELETED_RESTAURANT);
     public static Menu DELETED_MENU = new Menu(DELETED_MENU_ID, LocalDate.now(), DELETED_RESTAURANT);
     public static final List<Menu> MENUS = List.of(MENU_1, MENU_2, DELETED_MENU);
-    public static Menu NEW_MENU = new Menu(null, LocalDate.now(), RESTAURANT_2);
+    public static Menu NEW_MENU = new Menu(null, LocalDate.now().plusDays(1), RESTAURANT_2);
 
     static {
-        Field menuDateField = null;
+        Field menuDateField;
         try {
             menuDateField = MENU_2.getClass().getDeclaredField("menuDate");
             menuDateField.setAccessible(true);

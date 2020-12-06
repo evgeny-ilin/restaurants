@@ -10,12 +10,16 @@ import club.beingsoft.restaurants.util.exception.PermissionException;
 import org.springframework.util.Assert;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ValidationUtil {
+
+    private static final String NOT_FOUND = " not found";
+
+    private ValidationUtil() {
+    }
 
     public static void checkId(String entityName, Integer id) {
         if (id == null) {
@@ -26,18 +30,16 @@ public class ValidationUtil {
     public static <T> T checkEntityNotNull(String entityName, T entity, Integer id) {
         if (id == null) id = -1;
         if (entity == null)
-            throw new NotFoundException("Object " + entityName + " with id " + id + " not found");
-        if (entity instanceof Optional) {
-            if (!((Optional<?>) entity).isPresent())
-                throw new NotFoundException("Object with id " + id + " not found");
+            throw new NotFoundException("Object " + entityName + " with id " + id + NOT_FOUND);
+        if (entity instanceof Optional && !((Optional<?>) entity).isPresent()) {
+            throw new NotFoundException("Object with id " + id + NOT_FOUND);
         }
         return entity;
     }
 
-    public static <T> Collection<T> checkCollectionFound(String collectionName, Collection<T> collection) {
-        if (collection.size() == 0)
-            throw new NotFoundException(collectionName + " not found");
-        return collection;
+    public static <T> void checkCollectionFound(String collectionName, Collection<T> collection) {
+        if (collection.isEmpty())
+            throw new NotFoundException(collectionName + NOT_FOUND);
     }
 
     public static void checkAdmin() {
@@ -47,12 +49,12 @@ public class ValidationUtil {
     }
 
     public static void checkEntityDelete(AbstractBaseEntity entity) {
-        Assert.isTrue(entity.isDeleted(), "Entity " + entity.getClass().getName() + " is deleted");
+        Assert.isTrue(!entity.isDeleted(), "Entity " + entity.getClass().getName() + " is deleted");
     }
 
     public static void checkDishDeleted(Set<Dish> dishes) {
-        Set<Dish> deletedDishes = new HashSet<>(dishes.stream().filter(AbstractBaseEntity::isDeleted).collect(Collectors.toSet()));
-        if (deletedDishes.size() > 0) {
+        Set<Dish> deletedDishes = dishes.stream().filter(AbstractBaseEntity::isDeleted).collect(Collectors.toSet());
+        if (!deletedDishes.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder("Dishes deleted: ");
             deletedDishes.forEach(dish -> {
                 stringBuilder.append(dish);

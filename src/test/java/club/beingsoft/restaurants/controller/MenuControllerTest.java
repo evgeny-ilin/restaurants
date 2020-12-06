@@ -61,14 +61,9 @@ public class MenuControllerTest {
     @Test
     public void saveNewMenu() {
         Menu menuDB = (Menu) menuController.saveMenu(null, RESTAURANT_3_ID, NEW_MENU).getBody();
+        assert menuDB != null;
         NEW_MENU.setId(menuDB.getId());
         Assert.assertEquals(NEW_MENU, menuDB);
-    }
-
-    @Test
-    public void saveDoubleMenu() {
-        menuController.saveMenu(null, RESTAURANT_3_ID, NEW_MENU).getBody();
-        Assert.assertThrows(NotFoundException.class, () -> menuController.saveMenu(null, RESTAURANT_3_ID, NEW_MENU).getBody());
     }
 
     @Test
@@ -100,7 +95,7 @@ public class MenuControllerTest {
     @Test
     public void saveNewMenuUser() {
         SecurityUtil.setAuthUser(USER);
-        Assert.assertThrows(PermissionException.class, () -> menuController.saveMenu(null, RESTAURANT_2_ID, NEW_MENU).getBody());
+        Assert.assertThrows(PermissionException.class, () -> menuController.saveMenu(null, RESTAURANT_2_ID, NEW_MENU));
     }
 
     @Test
@@ -111,22 +106,22 @@ public class MenuControllerTest {
 
     @Test
     public void linkDishToMenuNullId() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(null, DISHES_IDs).getBody());
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(null, DISHES_IDs));
     }
 
     @Test
     public void linkDishToMenuNotFoundDishes() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(MENU_2_ID, List.of(NOT_FOUND_ID)).getBody());
+        Assert.assertThrows(NotFoundException.class, () -> menuController.linkDishToMenu(MENU_2_ID, List.of(NOT_FOUND_ID)));
     }
 
     @Test
     public void linkDishToMenuDeletedMenu() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(DELETED_MENU_ID, DISHES_IDs).getBody());
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(DELETED_MENU_ID, DISHES_IDs));
     }
 
     @Test
     public void linkDishToMenuDeletedDish() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(null, List.of(DELETED_DISH_ID)).getBody());
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(null, List.of(DELETED_DISH_ID)));
     }
 
     @Test
@@ -137,22 +132,22 @@ public class MenuControllerTest {
 
     @Test
     public void unlinkDishToMenuNullId() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.unlinkDishFromMenu(null, DISHES_IDs).getBody());
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.unlinkDishFromMenu(null, DISHES_IDs));
     }
 
     @Test
     public void unlinkDishToMenuNotFoundDishes() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.unlinkDishFromMenu(MENU_2_ID, List.of(NOT_FOUND_ID)).getBody());
+        Assert.assertThrows(NotFoundException.class, () -> menuController.unlinkDishFromMenu(MENU_2_ID, List.of(NOT_FOUND_ID)));
     }
 
     @Test
     public void unlinkDishToMenuDeletedMenu() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.unlinkDishFromMenu(DELETED_MENU_ID, DISHES_IDs).getBody());
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.unlinkDishFromMenu(DELETED_MENU_ID, DISHES_IDs));
     }
 
     @Test
     public void unlinkDishToMenuDeletedDish() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.unlinkDishFromMenu(null, List.of(DELETED_DISH_ID)).getBody());
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuController.unlinkDishFromMenu(null, List.of(DELETED_DISH_ID)));
     }
 
     @Test
