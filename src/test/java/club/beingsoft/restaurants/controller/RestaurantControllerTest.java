@@ -1,12 +1,14 @@
 package club.beingsoft.restaurants.controller;
 
 import club.beingsoft.restaurants.model.Restaurant;
+import club.beingsoft.restaurants.model.User;
 import club.beingsoft.restaurants.util.SecurityUtil;
-import club.beingsoft.restaurants.util.exception.PermissionException;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -16,19 +18,21 @@ import java.util.List;
 
 import static club.beingsoft.restaurants.RestaurantTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
-import static club.beingsoft.restaurants.UserTestData.USER;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class RestaurantControllerTest {
 
+    private static MockedStatic<SecurityUtil> securityUtilMocked;
     @Autowired
     private RestaurantController restaurantController;
 
-    @Before
-    public void before() {
-        SecurityUtil.setAuthUser(ADMIN);
+    @BeforeClass
+    public static void beforeAll() {
+        securityUtilMocked = Mockito.mockStatic(SecurityUtil.class);
+        User user = ADMIN;
+        securityUtilMocked.when(SecurityUtil::getAuthUser).thenReturn(user);
     }
 
     @Test
@@ -46,16 +50,10 @@ public class RestaurantControllerTest {
     @Test
     public void saveNewRestaurant() {
         Restaurant restaurantDB = (Restaurant) restaurantController.saveRestaurant(null, NEW_RESTAURANT).getBody();
+        assert restaurantDB != null;
         NEW_RESTAURANT.setId(restaurantDB.getId());
         Assert.assertEquals(NEW_RESTAURANT, restaurantDB);
     }
-
-    @Test
-    public void saveRestaurantUser() {
-        SecurityUtil.setAuthUser(USER);
-        Assert.assertThrows(PermissionException.class, () -> restaurantController.saveRestaurant(null, NEW_RESTAURANT).getBody());
-    }
-
 
     @Test
     public void updateRestaurant() {
@@ -68,11 +66,5 @@ public class RestaurantControllerTest {
         restaurantController.deleteRestaurant(DELETED_RESTAURANT_ID);
         Restaurant restaurantDB = restaurantController.getRestaurant(DELETED_RESTAURANT_ID);
         Assert.assertEquals(DELETED_RESTAURANT, restaurantDB);
-    }
-
-    @Test
-    public void deleteRestaurantUser() {
-        SecurityUtil.setAuthUser(USER);
-        Assert.assertThrows(PermissionException.class, () -> restaurantController.deleteRestaurant(DELETED_RESTAURANT_ID));
     }
 }
