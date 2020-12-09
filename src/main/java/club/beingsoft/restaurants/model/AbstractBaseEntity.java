@@ -1,5 +1,6 @@
 package club.beingsoft.restaurants.model;
 
+import club.beingsoft.restaurants.util.HasId;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import org.springframework.util.Assert;
 
@@ -11,7 +12,7 @@ import java.time.temporal.ChronoUnit;
 @MappedSuperclass
 // http://stackoverflow.com/questions/594597/hibernate-annotations-which-is-better-field-or-property-access
 @Access(AccessType.FIELD)
-public abstract class AbstractBaseEntity {
+public abstract class AbstractBaseEntity implements HasId {
     public static final int START_SEQ = 100000;
 
     @Id
@@ -31,7 +32,7 @@ public abstract class AbstractBaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "delete_user_id")
-    protected User delete_user;
+    protected User deleteUser;
 
     @Column(name = "delete_date")
     protected LocalDateTime deleteDate;
@@ -68,11 +69,11 @@ public abstract class AbstractBaseEntity {
     }
 
     public boolean isDeleted() {
-        return this.delete_user != null;
+        return this.deleteUser != null;
     }
 
     public void delete() {
-        this.delete_user = SecurityUtil.getAuthUser();
+        this.deleteUser = SecurityUtil.getAuthUser();
         this.deleteDate = LocalDateTime.now();
     }
 
