@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public UserTo create(UserTo userTo) {
+    public UserTo create(@RequestBody UserTo userTo) {
         log.info("create from to {}", userTo);
         User user = createNewFromTo(userTo);
         checkNew(user);

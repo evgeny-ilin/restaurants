@@ -16,13 +16,27 @@ public class UserUtil {
     }
 
     public static UserTo asTo(User user) {
-        return new UserTo(user.getId(), user.getName(), user.getEmail(), null, user.getRoles());
+        return new UserTo(user.getId(), user.getName(), user.getEmail(), null, user.getRoles(), user.isEnabled(), user.getDeleteDate(), user.getDeleteUser());
     }
 
     public static User updateFromTo(User user, UserTo userTo) {
-        user.setName(userTo.getName());
-        user.setEmail(userTo.getEmail().toLowerCase());
-        user.setPassword(userTo.getPassword());
+        if (userTo.getName() != null) {
+            user.setName(userTo.getName());
+        }
+
+        if (userTo.getEmail() != null) {
+            user.setEmail(userTo.getEmail().toLowerCase());
+        }
+
+        if (userTo.getPassword() != null) {
+            user.setPassword(userTo.getPassword());
+        }
+
+        if (userTo.getRoles() != null) {
+            user.setRoles(userTo.getRoles());
+        }
+
+        user.setEnabled(userTo.isEnabled());
         return user;
     }
 

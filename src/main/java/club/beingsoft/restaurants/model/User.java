@@ -112,6 +112,12 @@ public class User extends AbstractNamedEntity {
     }
 
     @Override
+    public void delete() {
+        this.enabled = false;
+        super.delete();
+    }
+
+    @Override
     public String toString() {
         return "User{" +
                 "id=" + id +

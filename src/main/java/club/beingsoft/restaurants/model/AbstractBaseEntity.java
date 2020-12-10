@@ -46,6 +46,7 @@ public abstract class AbstractBaseEntity implements HasId {
         this.user = SecurityUtil.getAuthUser();
     }
 
+    @Override
     public Integer getId() {
         return id;
     }
@@ -55,6 +56,7 @@ public abstract class AbstractBaseEntity implements HasId {
     }
 
     // doesn't work for hibernate lazy proxy
+    @Override
     public int id() {
         Assert.notNull(id, "Entity must has id");
         return id;
@@ -64,6 +66,7 @@ public abstract class AbstractBaseEntity implements HasId {
         this.user = SecurityUtil.getAuthUser();
     }
 
+    @Override
     public boolean isNew() {
         return this.id == null;
     }
@@ -75,6 +78,14 @@ public abstract class AbstractBaseEntity implements HasId {
     public void delete() {
         this.deleteUser = SecurityUtil.getAuthUser();
         this.deleteDate = LocalDateTime.now();
+    }
+
+    public User getDeleteUser() {
+        return deleteUser;
+    }
+
+    public LocalDateTime getDeleteDate() {
+        return deleteDate;
     }
 
     @Override
