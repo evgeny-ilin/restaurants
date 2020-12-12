@@ -43,7 +43,7 @@ public class DishController {
     }
 
     @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Object> saveDish(
+    public ResponseEntity saveDish(
             @PathVariable Integer id,
             @RequestBody Dish dish
     ) {
@@ -64,9 +64,9 @@ public class DishController {
         List<Menu> menus = (List<Menu>) menuJpaRepository.findAll(
                 QMenu.menu.dishes
                         .contains(dish)
-                        .and(QMenu.menu.delete_user.isNull())
+                        .and(QMenu.menu.deleteUser.isNull())
         );
-        if (menus.size() > 0) {
+        if (!menus.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder("Dish NOT deleted cause it's in menu: ");
             menus.forEach(menu -> {
                 stringBuilder.append(menu);

@@ -3,6 +3,7 @@ package club.beingsoft.restaurants.controller;
 import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.model.User;
 import club.beingsoft.restaurants.util.SecurityUtil;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,6 +34,11 @@ public class RestaurantControllerTest {
         securityUtilMocked = Mockito.mockStatic(SecurityUtil.class);
         User user = ADMIN;
         securityUtilMocked.when(SecurityUtil::getAuthUser).thenReturn(user);
+    }
+
+    @AfterClass
+    public static void close() {
+        securityUtilMocked.close();
     }
 
     @Test
