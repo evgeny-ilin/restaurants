@@ -6,6 +6,7 @@ import club.beingsoft.restaurants.model.User;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,6 +39,11 @@ public class MenuControllerTest {
         securityUtilMocked = Mockito.mockStatic(SecurityUtil.class);
         User user = ADMIN;
         securityUtilMocked.when(SecurityUtil::getAuthUser).thenReturn(user);
+    }
+
+    @AfterClass
+    public static void close() {
+        securityUtilMocked.close();
     }
 
     @Test
