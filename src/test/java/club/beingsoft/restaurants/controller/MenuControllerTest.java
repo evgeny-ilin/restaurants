@@ -2,14 +2,16 @@ package club.beingsoft.restaurants.controller;
 
 import club.beingsoft.restaurants.MenuTestData;
 import club.beingsoft.restaurants.model.Menu;
+import club.beingsoft.restaurants.model.User;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
-import club.beingsoft.restaurants.util.exception.PermissionException;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -21,7 +23,6 @@ import static club.beingsoft.restaurants.DishTestData.DELETED_DISH_ID;
 import static club.beingsoft.restaurants.MenuTestData.*;
 import static club.beingsoft.restaurants.RestaurantTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
-import static club.beingsoft.restaurants.UserTestData.USER;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -30,10 +31,13 @@ public class MenuControllerTest {
 
     @Autowired
     private MenuController menuController;
+    private static MockedStatic<SecurityUtil> securityUtilMocked;
 
-    @Before
-    public void before() {
-        SecurityUtil.setAuthUser(ADMIN);
+    @BeforeClass
+    public static void beforeAll() {
+        securityUtilMocked = Mockito.mockStatic(SecurityUtil.class);
+        User user = ADMIN;
+        securityUtilMocked.when(SecurityUtil::getAuthUser).thenReturn(user);
     }
 
     @Test
@@ -93,12 +97,6 @@ public class MenuControllerTest {
     }
 
     @Test
-    public void saveNewMenuUser() {
-        SecurityUtil.setAuthUser(USER);
-        Assert.assertThrows(PermissionException.class, () -> menuController.saveMenu(null, RESTAURANT_2_ID, NEW_MENU));
-    }
-
-    @Test
     public void linkDishToMenu() {
         Menu menuDB = (Menu) menuController.linkDishToMenu(MENU_2_ID, DISHES_IDs).getBody();
         Assert.assertEquals(MenuTestData.getLinkedMenu(), menuDB);
@@ -122,12 +120,6 @@ public class MenuControllerTest {
     @Test
     public void linkDishToMenuDeletedDish() {
         Assert.assertThrows(IllegalArgumentException.class, () -> menuController.linkDishToMenu(null, List.of(DELETED_DISH_ID)));
-    }
-
-    @Test
-    public void linkDishToMenuUser() {
-        SecurityUtil.setAuthUser(USER);
-        Assert.assertThrows(PermissionException.class, () -> menuController.linkDishToMenu(MENU_2_ID, DISHES_IDs));
     }
 
     @Test
@@ -157,12 +149,6 @@ public class MenuControllerTest {
     }
 
     @Test
-    public void unlinkDishFromMenuUser() {
-        SecurityUtil.setAuthUser(USER);
-        Assert.assertThrows(PermissionException.class, () -> menuController.unlinkDishFromMenu(MENU_2_ID, DISHES_IDs));
-    }
-
-    @Test
     public void deleteMenu() {
         menuController.deleteMenu(DELETED_MENU_ID);
         Menu menuDB = menuController.getMenu(DELETED_MENU_ID);
@@ -177,11 +163,5 @@ public class MenuControllerTest {
     @Test
     public void deleteMenuNotFound() {
         Assert.assertThrows(NotFoundException.class, () -> menuController.deleteMenu(NOT_FOUND_ID));
-    }
-
-    @Test
-    public void deleteMenuUser() {
-        SecurityUtil.setAuthUser(USER);
-        Assert.assertThrows(PermissionException.class, () -> menuController.deleteMenu(DELETED_MENU_ID));
     }
 }

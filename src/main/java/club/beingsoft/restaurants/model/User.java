@@ -1,5 +1,7 @@
 package club.beingsoft.restaurants.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -19,6 +21,7 @@ public class User extends AbstractNamedEntity {
     @Column(name = "password", nullable = false)
     @NotBlank
     @Size(min = 5, max = 100)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "email", nullable = false, unique = true)
@@ -32,6 +35,7 @@ public class User extends AbstractNamedEntity {
 
     @Column(name = "registered", nullable = false)
     @NotNull
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date registered = new Date();
 
     @Enumerated(EnumType.STRING)
@@ -59,6 +63,12 @@ public class User extends AbstractNamedEntity {
         this.enabled = enabled;
         this.registered = registered;
         setRoles(roles);
+    }
+
+    public User(String email, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.email = email;
+        this.password = password;
+        this.roles = (Set<Role>) authorities;
     }
 
     public String getEmail() {

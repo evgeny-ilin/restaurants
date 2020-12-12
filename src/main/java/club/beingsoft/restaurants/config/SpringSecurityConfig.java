@@ -32,7 +32,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/rest/restaurants/**").hasRole(ADMIN)
                 .antMatchers("/rest/votes/**").hasAnyRole(ADMIN, "USER")
                 .antMatchers("/**").permitAll()
-                .and().formLogin();
+                .and().formLogin()
+                .and().csrf().disable();
     }
 
     @Bean

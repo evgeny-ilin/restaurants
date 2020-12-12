@@ -50,7 +50,6 @@ public class MenuController {
             @RequestParam(name = "restaurant") Integer restaurantId,
             @RequestBody Menu menu
     ) {
-        checkAdmin();
         checkEntityNotNull(MENU_ENTITY, menu, menuId);
         if (menuId != null) menu.setId(menuId);
         checkId("Restaurant", restaurantId);
@@ -70,7 +69,6 @@ public class MenuController {
             @RequestParam(name = "menuId") Integer menuId,
             @RequestParam(name = "dishesIds") List<Integer> dishesIds
     ) {
-        checkAdmin();
         checkId(MENU_ENTITY, menuId);
         checkCollectionFound("DISHES IDs", dishesIds);
         Menu menu = getMenu(menuId);
@@ -87,7 +85,6 @@ public class MenuController {
             @RequestParam(name = "menuId") Integer menuId,
             @RequestParam(name = "dishesIds") List<Integer> dishesIds
     ) {
-        checkAdmin();
         checkId(MENU_ENTITY, menuId);
         checkCollectionFound("DISHES IDs", dishesIds);
         Menu menu = getMenu(menuId);
@@ -103,7 +100,6 @@ public class MenuController {
     public ResponseEntity deleteMenu(
             @PathVariable Integer id
     ) {
-        checkAdmin();
         checkId(MENU_ENTITY, id);
         Optional<Menu> menuDB = menuJpaRepository.findById(id);
         checkEntityNotNull(MENU_ENTITY, menuDB, id);

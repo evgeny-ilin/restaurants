@@ -1,14 +1,16 @@
 package club.beingsoft.restaurants.controller;
 
 import club.beingsoft.restaurants.model.Dish;
+import club.beingsoft.restaurants.model.User;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
-import club.beingsoft.restaurants.util.exception.PermissionException;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -18,19 +20,21 @@ import java.util.List;
 
 import static club.beingsoft.restaurants.DishTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
-import static club.beingsoft.restaurants.UserTestData.USER;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class DishControllerTest {
-
     @Autowired
     private DishController dishController;
 
-    @Before
-    public void before() {
-        SecurityUtil.setAuthUser(ADMIN);
+    private static MockedStatic<SecurityUtil> securityUtilMocked;
+
+    @BeforeClass
+    public static void beforeAll() {
+        securityUtilMocked = Mockito.mockStatic(SecurityUtil.class);
+        User user = ADMIN;
+        securityUtilMocked.when(SecurityUtil::getAuthUser).thenReturn(user);
     }
 
     @Test
@@ -58,6 +62,7 @@ public class DishControllerTest {
     @Test
     public void saveNewDish() {
         Dish dishDB = (Dish) dishController.saveDish(null, NEW_DISH).getBody();
+        assert dishDB != null;
         NEW_DISH.setId(dishDB.getId());
         Assert.assertEquals(NEW_DISH, dishDB);
     }
@@ -65,12 +70,6 @@ public class DishControllerTest {
     @Test
     public void saveNewNullDish() {
         Assert.assertThrows(NotFoundException.class, () -> dishController.saveDish(null, null));
-    }
-
-    @Test
-    public void saveDishUser() {
-        SecurityUtil.setAuthUser(USER);
-        Assert.assertThrows(PermissionException.class, () -> dishController.saveDish(null, NEW_DISH).getBody());
     }
 
     @Test
@@ -96,9 +95,4 @@ public class DishControllerTest {
         Assert.assertThrows(EntityDeletedException.class, () -> dishController.deleteDish(DISH_1_ID));
     }
 
-    @Test
-    public void deleteDishUser() {
-        SecurityUtil.setAuthUser(USER);
-        Assert.assertThrows(PermissionException.class, () -> dishController.deleteDish(DELETED_DISH_ID));
-    }
 }

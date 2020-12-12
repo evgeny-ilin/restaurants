@@ -1,16 +1,16 @@
 package club.beingsoft.restaurants.controller;
 
+import club.beingsoft.restaurants.model.User;
 import club.beingsoft.restaurants.model.Vote;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
 import club.beingsoft.restaurants.util.exception.VoteCantBeChangedException;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -25,7 +25,7 @@ import java.util.List;
 
 import static club.beingsoft.restaurants.RestaurantTestData.RESTAURANT_2_ID;
 import static club.beingsoft.restaurants.RestaurantTestData.RESTAURANT_3_ID;
-import static club.beingsoft.restaurants.UserTestData.USER;
+import static club.beingsoft.restaurants.UserTestData.ADMIN;
 import static club.beingsoft.restaurants.VoteTestData.*;
 import static org.mockito.Mockito.doReturn;
 
@@ -45,9 +45,17 @@ public class VoteControllerTest {
 
     private Clock fixedClock;
 
+    private static MockedStatic<SecurityUtil> securityUtilMocked;
+
+    @BeforeClass
+    public static void beforeAll() {
+        securityUtilMocked = Mockito.mockStatic(SecurityUtil.class);
+        User user = ADMIN;
+        securityUtilMocked.when(SecurityUtil::getAuthUser).thenReturn(user);
+    }
+
     @Before
     public void before() {
-        SecurityUtil.setAuthUser(USER);
         MockitoAnnotations.initMocks(this);
         //tell your tests to return the specified LOCAL_DATE when calling LocalDate.now(clock)
         fixedClock = Clock.fixed(LOCAL_DATE_TIME.toInstant(ZoneOffset.UTC), ZoneId.systemDefault());

@@ -2,11 +2,8 @@ package club.beingsoft.restaurants.util;
 
 import club.beingsoft.restaurants.model.AbstractBaseEntity;
 import club.beingsoft.restaurants.model.Dish;
-import club.beingsoft.restaurants.model.Role;
-import club.beingsoft.restaurants.model.User;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
-import club.beingsoft.restaurants.util.exception.PermissionException;
 import org.springframework.util.Assert;
 
 import java.util.Collection;
@@ -31,7 +28,7 @@ public class ValidationUtil {
         if (id == null) id = -1;
         if (entity == null)
             throw new NotFoundException("Object " + entityName + " with id " + id + NOT_FOUND);
-        if (entity instanceof Optional && !((Optional<?>) entity).isPresent()) {
+        if (entity instanceof Optional && ((Optional<?>) entity).isEmpty()) {
             throw new NotFoundException("Object with id " + id + NOT_FOUND);
         }
         return entity;
@@ -40,12 +37,6 @@ public class ValidationUtil {
     public static <T> void checkCollectionFound(String collectionName, Collection<T> collection) {
         if (collection.isEmpty())
             throw new NotFoundException(collectionName + NOT_FOUND);
-    }
-
-    public static void checkAdmin() {
-        User user = SecurityUtil.getAuthUser();
-        if (!user.getRoles().contains(Role.ADMIN))
-            throw new PermissionException("You don't have permission on this operation");
     }
 
     public static void checkEntityDelete(AbstractBaseEntity entity) {

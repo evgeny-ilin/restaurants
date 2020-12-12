@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-import static club.beingsoft.restaurants.util.ValidationUtil.*;
+import static club.beingsoft.restaurants.util.ValidationUtil.checkEntityNotNull;
+import static club.beingsoft.restaurants.util.ValidationUtil.checkId;
 
 @RestController
 @RequestMapping(path = "/rest/dishes")
@@ -46,7 +47,6 @@ public class DishController {
             @PathVariable Integer id,
             @RequestBody Dish dish
     ) {
-        checkAdmin();
         checkEntityNotNull(DISH_ENTITY, dish, id);
 
         if (id != null) dish.setId(id);
@@ -58,7 +58,6 @@ public class DishController {
     public ResponseEntity deleteDish(
             @PathVariable Integer id
     ) {
-        checkAdmin();
         checkId(DISH_ENTITY, id);
 
         Dish dish = getDish(id);

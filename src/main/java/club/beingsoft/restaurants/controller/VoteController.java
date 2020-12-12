@@ -37,14 +37,14 @@ public class VoteController {
 
     @GetMapping(produces = "application/json")
     public List<Vote> getAllVotes() {
-        return (List<Vote>) voteJpaRepository.findAll(QVote.vote.user.eq(SecurityUtil.getAuthUser()));
+        return (List<Vote>) voteJpaRepository.findAll(QVote.vote.user.id.eq(SecurityUtil.getAuthUser().getId()));
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
     public Vote getVote(@PathVariable Integer id) {
         checkId(VOTE_ENTITY, id);
         Optional<Vote> vote = voteJpaRepository.findOne(
-                QVote.vote.user.eq(SecurityUtil.getAuthUser())
+                QVote.vote.user.id.eq(SecurityUtil.getAuthUser().getId())
                         .and(QVote.vote.id.eq(id))
         );
         checkEntityNotNull(VOTE_ENTITY, vote, id);
@@ -61,7 +61,7 @@ public class VoteController {
 
         LocalDate date = LocalDate.now(clock);
         Optional<Vote> voteDB = voteJpaRepository.findOne(
-                QVote.vote.user.eq(SecurityUtil.getAuthUser())
+                QVote.vote.user.id.eq(SecurityUtil.getAuthUser().getId())
                         .and(QVote.vote.voteDate.eq(date))
                         .and(QVote.vote.restaurant.eq(restaurant.get()))
         );
