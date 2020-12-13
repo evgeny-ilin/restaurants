@@ -13,10 +13,6 @@ import java.util.Set;
 public class UserTo extends BaseTo implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @NotBlank
-    @Size(min = 2, max = 100)
-    private String name;
-
     @Email
     @NotBlank
     @Size(max = 100)
@@ -36,8 +32,7 @@ public class UserTo extends BaseTo implements Serializable {
     }
 
     public UserTo(Integer id, String name, String email, String password, Set<Role> roles, boolean enabled, LocalDateTime deleteDate, User deleteUser) {
-        super(id);
-        this.name = name;
+        super(id, name);
         this.email = email;
         this.password = password;
         this.roles = roles;
@@ -60,14 +55,6 @@ public class UserTo extends BaseTo implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmail() {

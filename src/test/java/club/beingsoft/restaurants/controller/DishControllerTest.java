@@ -12,12 +12,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Locale;
 
 import static club.beingsoft.restaurants.DishTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
@@ -26,6 +30,8 @@ import static club.beingsoft.restaurants.UserTestData.ADMIN;
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class DishControllerTest {
+    private static final Logger log = LoggerFactory.getLogger(DishControllerTest.class);
+
     @Autowired
     private DishController dishController;
 
@@ -45,47 +51,56 @@ public class DishControllerTest {
 
     @Test
     public void getAllDishes() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         List<Dish> dishDB = dishController.getAllDishes();
         Assert.assertEquals(DISHES, dishDB);
     }
 
     @Test
     public void getDish() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         Dish dishDB = dishController.getDish(DISH_1_ID);
         Assert.assertEquals(DISH_1, dishDB);
     }
 
     @Test
     public void getDishNullId() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> dishController.getDish(null));
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
+        Assert.assertThrows(ConstraintViolationException.class, () -> dishController.getDish(null));
     }
 
     @Test
     public void getDishNotFound() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         Assert.assertThrows(NotFoundException.class, () -> dishController.getDish(NOT_FOUND_ID));
     }
 
     @Test
     public void saveNewDish() {
-        Dish dishDB = (Dish) dishController.saveDish(null, NEW_DISH).getBody();
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
+        Dish dishDB = (Dish) dishController.saveDish(null, getNewDish()).getBody();
         assert dishDB != null;
-        NEW_DISH.setId(dishDB.getId());
-        Assert.assertEquals(NEW_DISH, dishDB);
+        Dish newDish = getNewDish();
+        newDish.setId(dishDB.getId());
+        Assert.assertEquals(newDish, dishDB);
     }
 
     @Test
     public void saveNewNullDish() {
-        Assert.assertThrows(NotFoundException.class, () -> dishController.saveDish(null, null));
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
+        Assert.assertThrows(ConstraintViolationException.class, () -> dishController.saveDish(null, null));
     }
 
     @Test
     public void updateDish() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         Dish dishDB = (Dish) dishController.saveDish(DISH_3_ID, UPDATED_DISH).getBody();
         Assert.assertEquals(UPDATED_DISH, dishDB);
     }
 
     @Test
     public void deleteDish() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         dishController.deleteDish(DELETED_DISH_ID);
         Dish dishDB = dishController.getDish(DELETED_DISH_ID);
         Assert.assertEquals(DELETED_DISH, dishDB);
@@ -93,11 +108,13 @@ public class DishControllerTest {
 
     @Test
     public void deleteDishNotFound() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         Assert.assertThrows(NotFoundException.class, () -> dishController.deleteDish(NOT_FOUND_ID));
     }
 
     @Test
     public void deleteDishInMenu() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         Assert.assertThrows(EntityDeletedException.class, () -> dishController.deleteDish(DISH_1_ID));
     }
 

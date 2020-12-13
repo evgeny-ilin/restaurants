@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -18,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Locale;
 
 import static club.beingsoft.restaurants.MenuTestData.NOT_FOUND_ID;
 import static club.beingsoft.restaurants.UserTestData.*;
@@ -30,6 +33,7 @@ import static club.beingsoft.restaurants.util.UserUtil.asTo;
 @Transactional
 public class UserControllerTest {
     private static MockedStatic<SecurityUtil> securityUtilMocked;
+    private static final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
 
     @Autowired
     private UserController userController;
@@ -48,18 +52,21 @@ public class UserControllerTest {
 
     @Test
     public void getAll() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         List<UserTo> usersDb = userController.getAll();
         assertUsers(usersDb, USERS_TOS_LIST);
     }
 
     @Test
     public void get() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         UserTo userDb = userController.get(USER_TO.id());
         assertUsers(userDb, USER_TO);
     }
 
     @Test
     public void create() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         USER_TO_NEW.setPassword(USER_NEW.getPassword());
         UserTo userDb = userController.create(USER_TO_NEW);
         USER_TO_NEW.setPassword(USER_NEW.getPassword());
@@ -69,6 +76,7 @@ public class UserControllerTest {
 
     @Test
     public void delete() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         userController.delete(USER.id());
         USER.delete();
         UserTo deletedUserTo = asTo(USER);
@@ -78,6 +86,7 @@ public class UserControllerTest {
 
     @Test
     public void update() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         userController.update(USER_TO_UPDATED, USER_UPDATED.id());
         UserTo updatedUserToDb = userController.get(USER_UPDATED.id());
         assertUsers(updatedUserToDb, USER_TO_UPDATED);
@@ -85,12 +94,14 @@ public class UserControllerTest {
 
     @Test
     public void getByMail() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         UserTo userToDb = userController.getByMail(USER.getEmail());
         assertUsers(userToDb, USER_TO);
     }
 
     @Test
     public void enable() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         userController.enable(USER.id(), false);
         UserTo disabledUserToDb = userController.get(USER.id());
         assertUsers(disabledUserToDb, USER_TO_DISABLED);
@@ -98,11 +109,13 @@ public class UserControllerTest {
 
     @Test
     public void getUserNotFound() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         Assert.assertThrows(NotFoundException.class, () -> userController.get(NOT_FOUND_ID));
     }
 
     @Test
     public void getByEmailNotFound() {
+        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         Assert.assertThrows(NotFoundException.class, () -> userController.getByMail(NOT_FOUND_EMAIL));
     }
 

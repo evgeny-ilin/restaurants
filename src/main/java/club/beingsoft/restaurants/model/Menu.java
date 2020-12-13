@@ -14,12 +14,12 @@ public class Menu extends AbstractBaseEntity {
     @NotNull
     private LocalDate menuDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
     private Restaurant restaurant;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "MENU_DISHES",
             joinColumns = {@JoinColumn(name = "menu_id")},
             inverseJoinColumns = {@JoinColumn(name = "dish_id")}

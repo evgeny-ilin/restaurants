@@ -1,6 +1,7 @@
 package club.beingsoft.restaurants;
 
 import club.beingsoft.restaurants.model.Restaurant;
+import club.beingsoft.restaurants.to.RestaurantWithVotesTo;
 
 import java.util.List;
 
@@ -18,12 +19,19 @@ public class RestaurantTestData {
     public static final Restaurant RESTAURANT_3 = new Restaurant(RESTAURANT_3_ID, "RESTAURANT-TEST-3");
     public static final Restaurant UPDATED_RESTAURANT = new Restaurant(RESTAURANT_3_ID, "RESTAURANT-UPDATED");
     public static final Restaurant DELETED_RESTAURANT = new Restaurant(DELETED_RESTAURANT_ID, "DELETED-RESTAURANT-TEST");
-    public static final Restaurant NEW_RESTAURANT = new Restaurant(null, "RESTAURANT-TEST-NEW");
 
     public static final List<Restaurant> RESTAURANTS = List.of(RESTAURANT_1, RESTAURANT_2, RESTAURANT_3, DELETED_RESTAURANT);
+    public static final List<Restaurant> RESTAURANTS_WITH_DISHES = List.of(RESTAURANT_1);
+    public static final List<RestaurantWithVotesTo> RESTAURANTS_WITH_VOTES_TO = List.of(
+            new RestaurantWithVotesTo(RESTAURANT_1_ID, RESTAURANT_1.getName(), 2L),
+            new RestaurantWithVotesTo(RESTAURANT_2_ID, RESTAURANT_2.getName(), 1L));
 
     static {
         UPDATED_RESTAURANT.setUser();
         DELETED_RESTAURANT.delete();
+    }
+
+    public static Restaurant getNewRestaurant() {
+        return new Restaurant(null, "RESTAURANT-TEST-NEW");
     }
 }

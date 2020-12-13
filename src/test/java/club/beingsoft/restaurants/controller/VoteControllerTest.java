@@ -16,6 +16,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.validation.ConstraintViolationException;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -94,8 +95,9 @@ public class VoteControllerTest {
     public void saveVote() {
         log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         Vote voteDB = (Vote) voteController.saveVote(RESTAURANT_3_ID).getBody();
-        NEW_VOTE.setId(voteDB.getId());
-        Assert.assertEquals(NEW_VOTE, voteDB);
+        Vote newVote = getNewVote();
+        newVote.setId(voteDB.getId());
+        Assert.assertEquals(newVote, voteDB);
     }
 
     @Test
@@ -113,7 +115,7 @@ public class VoteControllerTest {
     @Test
     public void getVoteWithIdNull() {
         log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
-        Assert.assertThrows(IllegalArgumentException.class, () -> voteController.getVote(null));
+        Assert.assertThrows(ConstraintViolationException.class, () -> voteController.getVote(null));
     }
 
     @Test
