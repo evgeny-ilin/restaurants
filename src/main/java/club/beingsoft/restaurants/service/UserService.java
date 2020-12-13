@@ -7,7 +7,6 @@ import club.beingsoft.restaurants.util.AuthorizedUser;
 import club.beingsoft.restaurants.util.UserUtil;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +17,10 @@ import java.util.stream.Collectors;
 
 import static club.beingsoft.restaurants.util.UserUtil.asTo;
 import static club.beingsoft.restaurants.util.UserUtil.prepareToSave;
-import static club.beingsoft.restaurants.util.ValidationUtil.checkNotFound;
 
 @Service("userService")
 public class UserService implements UserDetailsService {
 
-    public static final String USER_NOT_FOUND_WITH_ID = "User not found with id ";
     private final UserJpaRepository repository;
     private final PasswordEncoder passwordEncoder;
 
@@ -38,18 +35,18 @@ public class UserService implements UserDetailsService {
     }
 
     public void delete(int id) {
-        User user = repository.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_WITH_ID + id));
+        User user = repository.findById(id).orElseThrow(() -> new NotFoundException(User.class, id));
         user.delete();
         repository.save(user);
     }
 
     public UserTo get(int id) {
-        return asTo(repository.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_WITH_ID + id)));
+        return asTo(repository.findById(id).orElseThrow(() -> new NotFoundException(User.class, id)));
     }
 
     public UserTo getByEmail(String email) {
         Assert.notNull(email, "email must not be null");
-        return asTo(checkNotFound(repository.findByEmail(email), "email=" + email));
+        return asTo(repository.findByEmail(email).orElseThrow(() -> new NotFoundException("Not found user with email = " + email)));
     }
 
     public List<UserTo> getAll() {
@@ -58,24 +55,21 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void update(UserTo userTo) {
-        User user = repository.findById(userTo.id()).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_WITH_ID + userTo.id()));
+        User user = repository.findById(userTo.id()).orElseThrow(() -> new NotFoundException(User.class, userTo.id()));
         user.setId(userTo.id());
-        prepareAndSave(UserUtil.updateFromTo(user, userTo));   // !! need only for JDBC implementation
+        prepareAndSave(UserUtil.updateFromTo(user, userTo));
     }
 
     @Transactional
     public void enable(int id, boolean enabled) {
-        User user = repository.findById(id).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_WITH_ID + id));
+        User user = repository.findById(id).orElseThrow(() -> new NotFoundException(User.class, id));
         user.setEnabled(enabled);
         repository.save(user);
     }
 
-    public AuthorizedUser loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = repository.findByEmail(email.toLowerCase());
-        if (user == null) {
-            throw new UsernameNotFoundException("User " + email + " is not found");
-        }
-        return new AuthorizedUser(user);
+    public AuthorizedUser loadUserByUsername(String email) throws NotFoundException {
+        return new AuthorizedUser(repository.findByEmail(email).orElseThrow(() -> new NotFoundException("Not founf user with email = " + email)));
+
     }
 
     private User prepareAndSave(User user) {

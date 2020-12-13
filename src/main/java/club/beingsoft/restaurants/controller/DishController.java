@@ -6,19 +6,23 @@ import club.beingsoft.restaurants.model.QMenu;
 import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
+import club.beingsoft.restaurants.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
 
-import static club.beingsoft.restaurants.util.ValidationUtil.checkEntityNotNull;
-import static club.beingsoft.restaurants.util.ValidationUtil.checkId;
+import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
 
 @RestController
 @RequestMapping(path = "/rest/dishes")
+@Transactional(readOnly = true)
+@Validated
 public class DishController {
 
     @Autowired
@@ -35,31 +39,26 @@ public class DishController {
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
-    public Dish getDish(@PathVariable Integer id) {
-        checkId(DISH_ENTITY, id);
-        Optional<Dish> dishDB = dishJpaRepository.findById(id);
-        checkEntityNotNull(DISH_ENTITY, dishDB, id);
-        return dishDB.get();
+    public Dish getDish(@PathVariable @NotNull Integer id) {
+        return dishJpaRepository.findById(id).orElseThrow(() -> new NotFoundException(Dish.class, id));
     }
 
     @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
+    @Transactional
     public ResponseEntity saveDish(
             @PathVariable Integer id,
-            @RequestBody Dish dish
+            @RequestBody @NotNull Dish dish
     ) {
-        checkEntityNotNull(DISH_ENTITY, dish, id);
-
-        if (id != null) dish.setId(id);
+        assureIdConsistent(dish, id);
         dish.setUser();
-        return new ResponseEntity(checkEntityNotNull(DISH_ENTITY, dishJpaRepository.save(dish), id), HttpStatus.CREATED);
+        return new ResponseEntity(dishJpaRepository.save(dish), HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")
+    @Transactional
     public ResponseEntity deleteDish(
-            @PathVariable Integer id
+            @PathVariable @NotNull Integer id
     ) {
-        checkId(DISH_ENTITY, id);
-
         Dish dish = getDish(id);
         List<Menu> menus = (List<Menu>) menuJpaRepository.findAll(
                 QMenu.menu.dishes

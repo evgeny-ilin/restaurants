@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "restaurant_id", "vote_date"}, name = "votes_unique_user_restaurant_idx")})
 public class Vote extends AbstractBaseEntity {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
     private Restaurant restaurant;
@@ -39,5 +39,9 @@ public class Vote extends AbstractBaseEntity {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public void setUserForTest(User user) {
+        this.user = user;
     }
 }

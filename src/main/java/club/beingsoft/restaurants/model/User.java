@@ -42,7 +42,7 @@ public class User extends AbstractNamedEntity {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique_idx")})
     @Column(name = "role", nullable = false)
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     private Set<Role> roles;
 
     public User() {
