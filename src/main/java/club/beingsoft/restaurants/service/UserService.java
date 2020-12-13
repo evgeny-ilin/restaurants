@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
     public void update(UserTo userTo) {
         User user = repository.findById(userTo.id()).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_WITH_ID + userTo.id()));
         user.setId(userTo.id());
-        prepareAndSave(UserUtil.updateFromTo(user, userTo));   // !! need only for JDBC implementation
+        prepareAndSave(UserUtil.updateFromTo(user, userTo));
     }
 
     @Transactional

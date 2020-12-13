@@ -16,4 +16,5 @@ public class VoteTestData {
     public static final Vote VOTE_2 = new Vote(VOTE_2_ID, RESTAURANT_2, LocalDate.now());
     public static final Vote NEW_VOTE = new Vote(null, RESTAURANT_3, LocalDate.now());
     public static final List<Vote> VOTES = List.of(VOTE_1, VOTE_2);
+    public static final List<Vote> VOTES_REST_1 = List.of(VOTE_1);
 }

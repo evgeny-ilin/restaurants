@@ -21,7 +21,7 @@ public abstract class AbstractBaseEntity implements HasId {
     protected Integer id;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     protected User user;
 
@@ -30,7 +30,7 @@ public abstract class AbstractBaseEntity implements HasId {
     protected LocalDateTime editDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delete_user_id")
     protected User deleteUser;
 
