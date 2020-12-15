@@ -1,6 +1,7 @@
 package club.beingsoft.restaurants.controller;
 
 import club.beingsoft.restaurants.model.User;
+import club.beingsoft.restaurants.service.UserService;
 import club.beingsoft.restaurants.to.UserTo;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
@@ -26,17 +27,20 @@ import static club.beingsoft.restaurants.MenuTestData.NOT_FOUND_ID;
 import static club.beingsoft.restaurants.UserTestData.*;
 import static club.beingsoft.restaurants.util.UserMatcher.assertUsers;
 import static club.beingsoft.restaurants.util.UserUtil.asTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Transactional
 public class UserControllerTest {
-    private static MockedStatic<SecurityUtil> securityUtilMocked;
     private static final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
-
+    private static MockedStatic<SecurityUtil> securityUtilMocked;
     @Autowired
     private UserController userController;
+
+    @Autowired
+    private UserService userService;
 
     @BeforeClass
     public static void beforeAll() {
@@ -53,8 +57,9 @@ public class UserControllerTest {
     @Test
     public void getAll() {
         log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
+        userController.getAll();
         List<UserTo> usersDb = userController.getAll();
-        assertUsers(usersDb, USERS_TOS_LIST);
+        assertThat(usersDb).usingElementComparatorIgnoringFields("roles", "deleteDate", "deleteUser", "editDate", "registered").isEqualTo(USERS_TOS_LIST);
     }
 
     @Test
@@ -77,10 +82,9 @@ public class UserControllerTest {
     @Test
     public void delete() {
         log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
-        userController.delete(USER.id());
-        USER.delete();
-        UserTo deletedUserTo = asTo(USER);
-        UserTo deletedUserToDb = userController.get(USER.id());
+        userController.delete(DELETED_USER.id());
+        UserTo deletedUserTo = asTo(DELETED_USER);
+        UserTo deletedUserToDb = userController.get(DELETED_USER.id());
         assertUsers(deletedUserToDb, deletedUserTo);
     }
 
@@ -95,16 +99,16 @@ public class UserControllerTest {
     @Test
     public void getByMail() {
         log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
-        UserTo userToDb = userController.getByMail(USER.getEmail());
+        UserTo userToDb = userController.getByMail(USER_1.getEmail());
         assertUsers(userToDb, USER_TO);
     }
 
     @Test
     public void enable() {
         log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
-        userController.enable(USER.id(), false);
-        UserTo disabledUserToDb = userController.get(USER.id());
-        assertUsers(disabledUserToDb, USER_TO_DISABLED);
+        userController.enable(ADMIN.id(), false);
+        UserTo disabledUserToDb = userController.get(ADMIN.id());
+        assertUsers(disabledUserToDb, ADMIN_TO_DISABLED);
     }
 
     @Test
@@ -118,11 +122,4 @@ public class UserControllerTest {
         log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         Assert.assertThrows(NotFoundException.class, () -> userController.getByMail(NOT_FOUND_EMAIL));
     }
-
-//    @Test
-//    public void saveNullPassword() {
-//        UserTo userTo = getUserToNew();
-//        userTo.setPassword(null);
-//        Assert.assertThrows(TransactionSystemException.class, () -> userController.create(userTo));
-//    }
 }
