@@ -44,4 +44,8 @@ public class Vote extends AbstractBaseEntity {
     public void setUserForTest(User user) {
         this.user = user;
     }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
 }
