@@ -8,6 +8,8 @@ import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +33,13 @@ public class DishController {
     @Autowired
     private MenuJpaRepository menuJpaRepository;
 
-    private static final String DISH_ENTITY = "Dish";
-
     @GetMapping(produces = "application/json")
+    @Cacheable("dishes")
     public List<Dish> getAllDishes() {
         return dishJpaRepository.findAll();
     }
 
+    @Cacheable("dishes")
     @GetMapping(path = "/{id}", produces = "application/json")
     public Dish getDish(@PathVariable @NotNull Integer id) {
         return dishJpaRepository.findById(id).orElseThrow(() -> new NotFoundException(Dish.class, id));
@@ -45,6 +47,7 @@ public class DishController {
 
     @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     @Transactional
+    @CacheEvict("dishes")
     public ResponseEntity saveDish(
             @PathVariable Integer id,
             @RequestBody @NotNull Dish dish
@@ -56,6 +59,7 @@ public class DishController {
 
     @DeleteMapping(path = "/{id}")
     @Transactional
+    @CacheEvict("dishes")
     public ResponseEntity deleteDish(
             @PathVariable @NotNull Integer id
     ) {

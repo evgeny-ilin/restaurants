@@ -48,7 +48,9 @@ public class RestaurantJpaRepositoryCustomImpl implements RestaurantJpaRepositor
                 .select(restaurant.id, restaurant.name, vote.count().as(count))
                 .from(restaurant)
                 .innerJoin(vote).on(vote.restaurant.id.eq(restaurant.id))
-                .where(vote.voteDate.eq(LocalDate.now()))
+                .where(vote.voteDate.eq(LocalDate.now())
+                        .and(vote.deleteDate.isNull())
+                        .and(restaurant.deleteDate.isNull()))
                 .groupBy(restaurant.id)
                 .orderBy(count.desc())
                 .fetch();

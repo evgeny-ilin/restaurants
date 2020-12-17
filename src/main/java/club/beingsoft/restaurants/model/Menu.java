@@ -7,7 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "menus", uniqueConstraints = {@UniqueConstraint(columnNames = {"restaurant_id", "menu_date"}, name = "menus_unique_restaurant_date_idx")})
+@Table(name = "menus",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"restaurant_id", "menu_date"}, name = "menus_unique_restaurant_date_idx")},
+        indexes = {@Index(columnList = "menu_date", name = "menu_date_idx")})
 public class Menu extends AbstractBaseEntity {
 
     @Column(name = "menu_date", nullable = false)

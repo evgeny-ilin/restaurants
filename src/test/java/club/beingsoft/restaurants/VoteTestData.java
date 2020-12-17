@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static club.beingsoft.restaurants.RestaurantTestData.*;
-import static club.beingsoft.restaurants.UserTestData.USER;
+import static club.beingsoft.restaurants.UserTestData.USER_1;
 import static club.beingsoft.restaurants.model.AbstractBaseEntity.START_SEQ;
 
 public class VoteTestData {
@@ -22,7 +22,7 @@ public class VoteTestData {
     public static final List<Vote> VOTES_REST_1 = List.of(VOTE_1);
 
     static {
-        VOTE_2.setUserForTest(USER);
+        VOTE_2.setUserForTest(USER_1);
     }
 
     public static Vote getNewVote() {

@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -32,9 +30,6 @@ public class VoteController {
 
     @Autowired
     private VoteJpaRepository voteJpaRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Autowired
     private RestaurantJpaRepository restaurantJpaRepository;
@@ -75,14 +70,23 @@ public class VoteController {
                         .and(QVote.vote.restaurant.id.eq(restaurantId))
         );
 
+        Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).orElseThrow(() -> new NotFoundException("Restaureunt not found id: " + restaurantId));
+        if (restaurant.isDeleted()) {
+            throw new VoteCantBeChangedException("Vote can't be changed due restaurant deleted");
+        }
+
         Vote vote;
         if (voteDB.isPresent()) {
             vote = voteDB.get();
+            if (vote.isDeleted()) {
+                throw new VoteCantBeChangedException("Vote can't be changed due it's deleted");
+            }
             LocalDateTime deadLine = vote.getVoteDate().atTime(11, 0);
-            if (deadLine.isBefore(LocalDateTime.now(clock)))
+            if (deadLine.isBefore(LocalDateTime.now(clock))) {
                 throw new VoteCantBeChangedException("Vote can't be changed due deadline");
+            }
         } else {
-            vote = new Vote(entityManager.getReference(Restaurant.class, restaurantId), date);
+            vote = new Vote(restaurant, date);
         }
 
         return new ResponseEntity(voteJpaRepository.save(vote), HttpStatus.CREATED);

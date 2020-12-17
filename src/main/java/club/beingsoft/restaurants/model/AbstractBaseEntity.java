@@ -2,6 +2,7 @@ package club.beingsoft.restaurants.model;
 
 import club.beingsoft.restaurants.util.HasId;
 import club.beingsoft.restaurants.util.SecurityUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ public abstract class AbstractBaseEntity implements HasId {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     protected User user;
 
     @Column(name = "edit_date", nullable = false)
@@ -32,6 +34,7 @@ public abstract class AbstractBaseEntity implements HasId {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delete_user_id")
+    @JsonIgnore
     protected User deleteUser;
 
     @Column(name = "delete_date")
