@@ -20,9 +20,6 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
-//TODO Add pagination
-//TODO Add javadoc
-//TODO Add curl
 
 @RestController
 @RequestMapping(path = "/rest/dishes")

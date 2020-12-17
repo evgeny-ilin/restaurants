@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -103,7 +102,7 @@ public class VoteControllerTest {
     @Test
     public void saveVoteRestaurantNotFound() {
         log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
-        Assert.assertThrows(DataIntegrityViolationException.class, () -> voteController.saveVote(NOT_FOUND_ID).getBody());
+        Assert.assertThrows(NotFoundException.class, () -> voteController.saveVote(NOT_FOUND_ID).getBody());
     }
 
     @Test
