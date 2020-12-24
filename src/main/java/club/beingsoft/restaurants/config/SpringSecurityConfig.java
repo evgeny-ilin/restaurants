@@ -26,15 +26,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/rest/dishes/**").hasRole(ADMIN)
-                .antMatchers("/rest/menus/**").hasRole(ADMIN)
-                .antMatchers("/rest/restaurants/**").hasRole(ADMIN)
-                .antMatchers("/rest/users/**").hasRole(ADMIN)
-                .antMatchers("/rest/votes/**").hasAnyRole(ADMIN, "USER")
-                .antMatchers("/**").denyAll()
-                .and().formLogin()
-                .and().csrf().disable();
+//        http.authorizeRequests()
+//                .antMatchers("/rest/dishes/**").hasRole(ADMIN)
+//                .antMatchers("/rest/menus/**").hasRole(ADMIN)
+//                .antMatchers("/rest/restaurants/**").hasRole(ADMIN)
+//                .antMatchers("/rest/users/**").hasRole(ADMIN)
+//                .antMatchers("/rest/votes/**").hasAnyRole(ADMIN, "USER")
+//                .antMatchers("/**").denyAll()
+//                .and().formLogin()
+//                .and().csrf().disable();
     }
 
     @Bean

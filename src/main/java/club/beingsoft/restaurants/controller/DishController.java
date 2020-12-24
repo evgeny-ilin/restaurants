@@ -6,10 +6,7 @@ import club.beingsoft.restaurants.model.QMenu;
 import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
-import club.beingsoft.restaurants.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
+import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 
 @RestController
 @RequestMapping(path = "/rest/dishes")
@@ -34,21 +32,18 @@ public class DishController {
     private MenuJpaRepository menuJpaRepository;
 
     @GetMapping(produces = "application/json")
-    @Cacheable("dishes")
-    public List<Dish> getAllDishes() {
+    public List<Dish> getAll() {
         return dishJpaRepository.findAll();
     }
 
-    @Cacheable("dishes")
     @GetMapping(path = "/{id}", produces = "application/json")
-    public Dish getDish(@PathVariable @NotNull Integer id) {
-        return dishJpaRepository.findById(id).orElseThrow(() -> new NotFoundException(Dish.class, id));
+    public Dish get(@PathVariable @NotNull Integer id) {
+        return dishJpaRepository.findById(id).orElseThrow(() -> getFoundException(Dish.class, id));
     }
 
     @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     @Transactional
-    @CacheEvict("dishes")
-    public ResponseEntity saveDish(
+    public ResponseEntity save(
             @PathVariable Integer id,
             @RequestBody @NotNull Dish dish
     ) {
@@ -59,11 +54,10 @@ public class DishController {
 
     @DeleteMapping(path = "/{id}")
     @Transactional
-    @CacheEvict("dishes")
-    public ResponseEntity deleteDish(
+    public ResponseEntity delete(
             @PathVariable @NotNull Integer id
     ) {
-        Dish dish = getDish(id);
+        Dish dish = get(id);
         List<Menu> menus = (List<Menu>) menuJpaRepository.findAll(
                 QMenu.menu.dishes
                         .contains(dish)

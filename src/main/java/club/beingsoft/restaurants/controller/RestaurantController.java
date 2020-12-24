@@ -5,7 +5,6 @@ package club.beingsoft.restaurants.controller;
 import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.to.RestaurantWithVotesTo;
-import club.beingsoft.restaurants.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
+import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 
 @RestController
 @RequestMapping(path = "/rest/restaurants")
@@ -27,28 +27,28 @@ public class RestaurantController {
     private RestaurantJpaRepository restaurantJpaRepository;
 
     @GetMapping(produces = "application/json")
-    public List<Restaurant> getAllRestaurants() {
+    public List<Restaurant> getAll() {
         return restaurantJpaRepository.findAll();
     }
 
     @GetMapping(path = "/withdishes", produces = "application/json")
-    public List<Restaurant> getAllRestaurantsWithDishesToday() {
-        return restaurantJpaRepository.getAllRestaurantsWithDishesToday();
+    public List<Restaurant> getAllWithDishesToday() {
+        return restaurantJpaRepository.getAllWithDishesToday();
     }
 
     @GetMapping(path = "/sortedbyvotes", produces = "application/json")
-    public List<RestaurantWithVotesTo> getSortedByVotesRestaurants() {
-        return restaurantJpaRepository.getSortedByVotesRestaurantsToday();
+    public List<RestaurantWithVotesTo> getSortedByVotes() {
+        return restaurantJpaRepository.getSortedByVotesToday();
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
-    public Restaurant getRestaurant(@PathVariable @NotNull Integer id) {
-        return restaurantJpaRepository.findById(id).orElseThrow(() -> new NotFoundException(Restaurant.class, id));
+    public Restaurant get(@PathVariable @NotNull Integer id) {
+        return restaurantJpaRepository.findById(id).orElseThrow(() -> getFoundException(Restaurant.class, id));
     }
 
     @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     @Transactional
-    public ResponseEntity<Object> saveRestaurant(
+    public ResponseEntity<Object> save(
             @PathVariable Integer id,
             @RequestBody @NotNull Restaurant restaurant
     ) {
@@ -59,10 +59,10 @@ public class RestaurantController {
 
     @DeleteMapping(path = "/{id}")
     @Transactional
-    public ResponseEntity deleteRestaurant(
+    public ResponseEntity delete(
             @PathVariable @NotNull Integer id
     ) {
-        Restaurant restaurant = restaurantJpaRepository.findById(id).orElseThrow(() -> new NotFoundException(Restaurant.class, id));
+        Restaurant restaurant = restaurantJpaRepository.findById(id).orElseThrow(() -> getFoundException(Restaurant.class, id));
         restaurant.delete();
         restaurantJpaRepository.save(restaurant);
         return new ResponseEntity(HttpStatus.NO_CONTENT);

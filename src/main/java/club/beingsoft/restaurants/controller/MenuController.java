@@ -8,7 +8,6 @@ import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
-import club.beingsoft.restaurants.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +24,7 @@ import java.util.Set;
 
 import static club.beingsoft.restaurants.util.ValidationUtil.*;
 
+
 @RestController
 @RequestMapping(path = "/rest/menus")
 @Transactional(readOnly = true)
@@ -40,24 +40,24 @@ public class MenuController {
     private DishJpaRepository dishJpaRepository;
 
     @GetMapping(produces = "application/json")
-    public List<Menu> getAllMenus() {
+    public List<Menu> getAll() {
         return menuJpaRepository.findAll();
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
     public Menu getMenu(@PathVariable @NotNull Integer id) {
-        return menuJpaRepository.findById(id).orElseThrow(() -> new NotFoundException(Menu.class, id));
+        return menuJpaRepository.findById(id).orElseThrow(() -> getFoundException(Menu.class, id));
     }
 
     @PostMapping(path = "/", consumes = "application/json", produces = "application/json")
     @Transactional
-    public ResponseEntity saveMenu(
+    public ResponseEntity save(
             @RequestParam(name = "menu") Integer menuId,
             @RequestParam(name = "restaurant") @NotNull Integer restaurantId,
             @RequestBody @NotNull Menu menu
     ) {
         assureIdConsistent(menu, menuId);
-        Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).orElseThrow(() -> new NotFoundException(Restaurant.class, restaurantId));
+        Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).orElseThrow(() -> getFoundException(Restaurant.class, restaurantId));
         if (restaurant.isDeleted())
             throw new EntityDeletedException(restaurant.getName() + " was deleted");
         menu.setRestaurant(restaurant);
@@ -97,10 +97,10 @@ public class MenuController {
 
     @DeleteMapping(path = "/{id}")
     @Transactional
-    public ResponseEntity deleteMenu(
+    public ResponseEntity delete(
             @PathVariable @NotNull Integer id
     ) {
-        Menu menu = menuJpaRepository.findById(id).orElseThrow(() -> new NotFoundException(Menu.class, id));
+        Menu menu = menuJpaRepository.findById(id).orElseThrow(() -> getFoundException(Menu.class, id));
         menu.delete();
         menuJpaRepository.save(menu);
         return new ResponseEntity(HttpStatus.NO_CONTENT);

@@ -4,10 +4,10 @@ import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.model.User;
 import club.beingsoft.restaurants.to.RestaurantWithVotesTo;
 import club.beingsoft.restaurants.util.SecurityUtil;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -19,7 +19,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-import java.util.Locale;
 
 import static club.beingsoft.restaurants.RestaurantTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
@@ -47,32 +46,35 @@ public class RestaurantControllerTest {
         securityUtilMocked.close();
     }
 
+    @Rule
+    public TestRule watcher = new TestWatcher() {
+        protected void starting(Description description) {
+            System.out.println("Starting test: " + description.getMethodName());
+        }
+    };
+
     @Test
     public void getAllRestaurants() {
-        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
-        List<Restaurant> restaurantsDB = restaurantController.getAllRestaurants();
+        List<Restaurant> restaurantsDB = restaurantController.getAll();
         Assert.assertEquals(RESTAURANTS, restaurantsDB);
     }
 
     @Test
     public void getAllRestaurantsWithDishesToday() {
-        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
-        List<Restaurant> restaurantsDB = restaurantController.getAllRestaurantsWithDishesToday();
+        List<Restaurant> restaurantsDB = restaurantController.getAllWithDishesToday();
         Assert.assertEquals(RESTAURANTS_WITH_DISHES, restaurantsDB);
     }
 
     @Test
     public void getRestaurant() {
-        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
-        Restaurant restaurantDB = restaurantController.getRestaurant(RESTAURANT_1_ID);
+        Restaurant restaurantDB = restaurantController.get(RESTAURANT_1_ID);
         Assert.assertEquals(RESTAURANT_1, restaurantDB);
     }
 
     @Test
     public void saveNewRestaurant() {
-        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
         Restaurant newRestaurant = getNewRestaurant();
-        Restaurant restaurantDB = (Restaurant) restaurantController.saveRestaurant(null, newRestaurant).getBody();
+        Restaurant restaurantDB = (Restaurant) restaurantController.save(null, newRestaurant).getBody();
         assert restaurantDB != null;
         newRestaurant.setId(restaurantDB.getId());
         Assert.assertEquals(newRestaurant, restaurantDB);
@@ -80,24 +82,21 @@ public class RestaurantControllerTest {
 
     @Test
     public void updateRestaurant() {
-        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
-        Restaurant restaurantDB = (Restaurant) restaurantController.saveRestaurant(RESTAURANT_3_ID, UPDATED_RESTAURANT).getBody();
+        Restaurant restaurantDB = (Restaurant) restaurantController.save(RESTAURANT_3_ID, UPDATED_RESTAURANT).getBody();
         Assert.assertEquals(UPDATED_RESTAURANT, restaurantDB);
     }
 
     @Test
     public void deleteRestaurant() {
-        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
-        restaurantController.deleteRestaurant(DELETED_RESTAURANT_ID);
-        Restaurant restaurantDB = restaurantController.getRestaurant(DELETED_RESTAURANT_ID);
+        restaurantController.delete(DELETED_RESTAURANT_ID);
+        Restaurant restaurantDB = restaurantController.get(DELETED_RESTAURANT_ID);
         Assert.assertEquals(DELETED_RESTAURANT, restaurantDB);
     }
 
 
     @Test
     public void getSortedByVotesRestaurants() {
-        log.info(new Throwable().getStackTrace()[0].getMethodName().toUpperCase(Locale.ROOT));
-        List<RestaurantWithVotesTo> restaurantDB = restaurantController.getSortedByVotesRestaurants();
+        List<RestaurantWithVotesTo> restaurantDB = restaurantController.getSortedByVotes();
         Assert.assertEquals(RESTAURANTS_WITH_VOTES_TO, restaurantDB);
     }
 }

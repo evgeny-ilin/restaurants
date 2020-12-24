@@ -95,7 +95,6 @@ public abstract class AbstractBaseEntity implements HasId {
     public String toString() {
         return getClass().getSimpleName() + ":" +
                 "id=" + id +
-                ", editUser=" + user.name +
                 ", editDate=" + editDate;
     }
 

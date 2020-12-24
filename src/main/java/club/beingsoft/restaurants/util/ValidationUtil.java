@@ -110,4 +110,8 @@ public class ValidationUtil {
                         .collect(Collectors.joining("<br>"))
         );
     }
+
+    public static NotFoundException getFoundException(Class clazz, Integer id) {
+        return new NotFoundException(clazz, id);
+    }
 }

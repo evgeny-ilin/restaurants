@@ -6,7 +6,7 @@ import club.beingsoft.restaurants.to.RestaurantWithVotesTo;
 import java.util.List;
 
 public interface RestaurantJpaRepositoryCustom {
-    List<Restaurant> getAllRestaurantsWithDishesToday();
+    List<Restaurant> getAllWithDishesToday();
 
-    List<RestaurantWithVotesTo> getSortedByVotesRestaurantsToday();
+    List<RestaurantWithVotesTo> getSortedByVotesToday();
 }

@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static club.beingsoft.restaurants.util.UserUtil.asTo;
 import static club.beingsoft.restaurants.util.UserUtil.prepareToSave;
+import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 
 @Service("userService")
 public class UserService implements UserDetailsService {
@@ -38,14 +39,14 @@ public class UserService implements UserDetailsService {
 
     @CacheEvict(value = "users")
     public void delete(int id) {
-        User user = repository.findById(id).orElseThrow(() -> new NotFoundException(User.class, id));
+        User user = repository.findById(id).orElseThrow(() -> getFoundException(User.class, id));
         user.delete();
         repository.save(user);
     }
 
     @Cacheable("users")
     public UserTo get(int id) {
-        return asTo(repository.findById(id).orElseThrow(() -> new NotFoundException(User.class, id)));
+        return asTo(repository.findById(id).orElseThrow(() -> getFoundException(User.class, id)));
     }
 
     @Cacheable("users")
@@ -68,13 +69,13 @@ public class UserService implements UserDetailsService {
 
     @CacheEvict(value = "users")
     public void enable(int id, boolean enabled) {
-        User user = repository.findById(id).orElseThrow(() -> new NotFoundException(User.class, id));
+        User user = repository.findById(id).orElseThrow(() -> getFoundException(User.class, id));
         user.setEnabled(enabled);
         repository.save(user);
     }
 
     public AuthorizedUser loadUserByUsername(String email) throws NotFoundException {
-        return new AuthorizedUser(repository.findByEmail(email).orElseThrow(() -> new NotFoundException("Not founf user with email = " + email)));
+        return new AuthorizedUser(repository.findByEmail(email).orElseThrow(() -> new NotFoundException("Not found user with email = " + email)));
 
     }
 

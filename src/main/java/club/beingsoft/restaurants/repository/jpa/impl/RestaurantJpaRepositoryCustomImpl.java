@@ -19,7 +19,7 @@ public class RestaurantJpaRepositoryCustomImpl implements RestaurantJpaRepositor
     private EntityManager entityManager;
 
     @Override
-    public List<Restaurant> getAllRestaurantsWithDishesToday() {
+    public List<Restaurant> getAllWithDishesToday() {
         QRestaurant restaurant = QRestaurant.restaurant;
         QMenu menu = QMenu.menu;
         QDish dish = QDish.dish;
@@ -38,7 +38,7 @@ public class RestaurantJpaRepositoryCustomImpl implements RestaurantJpaRepositor
     }
 
     @Override
-    public List<RestaurantWithVotesTo> getSortedByVotesRestaurantsToday() {
+    public List<RestaurantWithVotesTo> getSortedByVotesToday() {
         QRestaurant restaurant = QRestaurant.restaurant;
         QVote vote = QVote.vote;
 
