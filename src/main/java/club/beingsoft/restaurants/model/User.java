@@ -112,9 +112,9 @@ public class User extends AbstractNamedEntity {
     }
 
     @Override
-    public void delete() {
+    public void delete(User user) {
         this.enabled = false;
-        super.delete();
+        super.delete(user);
     }
 
     @Override

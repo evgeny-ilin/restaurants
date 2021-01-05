@@ -2,6 +2,7 @@ package club.beingsoft.restaurants;
 
 import club.beingsoft.restaurants.model.Dish;
 import club.beingsoft.restaurants.model.Menu;
+import static club.beingsoft.restaurants.UserTestData.ADMIN;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -35,7 +36,7 @@ public class MenuTestData {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        DELETED_MENU.delete();
+        DELETED_MENU.delete(ADMIN);
     }
 
     public static Menu getLinkedMenu() {

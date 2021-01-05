@@ -4,6 +4,7 @@ import club.beingsoft.restaurants.model.User;
 import club.beingsoft.restaurants.repository.jpa.UserJpaRepository;
 import club.beingsoft.restaurants.to.UserTo;
 import club.beingsoft.restaurants.util.AuthorizedUser;
+import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.UserUtil;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
 import org.springframework.cache.annotation.CacheEvict;
@@ -40,7 +41,7 @@ public class UserService implements UserDetailsService {
     @CacheEvict(value = "users")
     public void delete(int id) {
         User user = repository.findById(id).orElseThrow(() -> getFoundException(User.class, id));
-        user.delete();
+        user.delete(SecurityUtil.getAuthUser());
         repository.save(user);
     }
 

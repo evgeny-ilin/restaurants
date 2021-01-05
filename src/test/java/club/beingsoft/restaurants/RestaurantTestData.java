@@ -2,7 +2,7 @@ package club.beingsoft.restaurants;
 
 import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.to.RestaurantWithVotesTo;
-
+import static club.beingsoft.restaurants.UserTestData.ADMIN;
 import java.util.List;
 
 import static club.beingsoft.restaurants.model.AbstractBaseEntity.START_SEQ;
@@ -27,8 +27,8 @@ public class RestaurantTestData {
             new RestaurantWithVotesTo(RESTAURANT_2_ID, RESTAURANT_2.getName(), 1L));
 
     static {
-        UPDATED_RESTAURANT.setUser();
-        DELETED_RESTAURANT.delete();
+        UPDATED_RESTAURANT.setUser(ADMIN);
+        DELETED_RESTAURANT.delete(ADMIN);
     }
 
     public static Restaurant getNewRestaurant() {

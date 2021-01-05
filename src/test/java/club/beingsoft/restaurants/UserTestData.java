@@ -29,7 +29,7 @@ public class UserTestData {
 
     static {
         ADMIN_TO_DISABLED.setEnabled(false);
-        DELETED_USER.delete();
+        DELETED_USER.delete(ADMIN);
         USERS_TOS_LIST.add(asTo(DELETED_USER));
     }
 

@@ -7,6 +7,7 @@ import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
+import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,7 +62,7 @@ public class MenuController {
         if (restaurant.isDeleted())
             throw new EntityDeletedException(restaurant.getName() + " was deleted");
         menu.setRestaurant(restaurant);
-        menu.setUser();
+        menu.setUser(SecurityUtil.getAuthUser());
         return new ResponseEntity(menuJpaRepository.save(menu), HttpStatus.CREATED);
     }
 
@@ -101,7 +102,7 @@ public class MenuController {
             @PathVariable @NotNull Integer id
     ) {
         Menu menu = menuJpaRepository.findById(id).orElseThrow(() -> getFoundException(Menu.class, id));
-        menu.delete();
+        menu.delete(SecurityUtil.getAuthUser());
         menuJpaRepository.save(menu);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

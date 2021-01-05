@@ -65,8 +65,8 @@ public abstract class AbstractBaseEntity implements HasId {
         return id;
     }
 
-    public void setUser() {
-        this.user = SecurityUtil.getAuthUser();
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
@@ -78,8 +78,8 @@ public abstract class AbstractBaseEntity implements HasId {
         return this.deleteUser != null;
     }
 
-    public void delete() {
-        this.deleteUser = SecurityUtil.getAuthUser();
+    public void delete(User user) {
+        this.deleteUser = user;
         this.deleteDate = LocalDateTime.now();
     }
 

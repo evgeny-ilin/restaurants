@@ -5,6 +5,7 @@ import club.beingsoft.restaurants.model.Menu;
 import club.beingsoft.restaurants.model.QMenu;
 import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
+import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class DishController {
             @RequestBody @NotNull Dish dish
     ) {
         assureIdConsistent(dish, id);
-        dish.setUser();
+        dish.setUser(SecurityUtil.getAuthUser());
         return new ResponseEntity(dishJpaRepository.save(dish), HttpStatus.CREATED);
     }
 
@@ -72,7 +73,7 @@ public class DishController {
             stringBuilder.delete(stringBuilder.lastIndexOf(","), stringBuilder.length());
             throw new EntityDeletedException(stringBuilder.toString());
         }
-        dish.delete();
+        dish.delete(SecurityUtil.getAuthUser());
         dishJpaRepository.save(dish);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

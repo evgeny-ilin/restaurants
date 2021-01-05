@@ -5,6 +5,7 @@ package club.beingsoft.restaurants.controller;
 import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.to.RestaurantWithVotesTo;
+import club.beingsoft.restaurants.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,7 @@ public class RestaurantController {
             @RequestBody @NotNull Restaurant restaurant
     ) {
         assureIdConsistent(restaurant, id);
-        restaurant.setUser();
+        restaurant.setUser(SecurityUtil.getAuthUser());
         return new ResponseEntity(restaurantJpaRepository.save(restaurant), HttpStatus.CREATED);
     }
 
@@ -63,7 +64,7 @@ public class RestaurantController {
             @PathVariable @NotNull Integer id
     ) {
         Restaurant restaurant = restaurantJpaRepository.findById(id).orElseThrow(() -> getFoundException(Restaurant.class, id));
-        restaurant.delete();
+        restaurant.delete(SecurityUtil.getAuthUser());
         restaurantJpaRepository.save(restaurant);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
