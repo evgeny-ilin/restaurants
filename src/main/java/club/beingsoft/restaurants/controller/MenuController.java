@@ -52,7 +52,7 @@ public class MenuController {
 
     @PostMapping(path = "/", consumes = "application/json", produces = "application/json")
     @Transactional
-    public ResponseEntity save(
+    public ResponseEntity<Menu> save(
             @RequestParam(name = "menu") Integer menuId,
             @RequestParam(name = "restaurant") @NotNull Integer restaurantId,
             @RequestBody @NotNull Menu menu
@@ -68,7 +68,7 @@ public class MenuController {
 
     @PostMapping(path = "/link", produces = "application/json")
     @Transactional
-    public ResponseEntity<Object> linkDishToMenu(
+    public ResponseEntity<Menu> linkDishToMenu(
             @RequestParam(name = "menuId") @NotNull Integer menuId,
             @RequestParam(name = "dishesIds") @NotNull @NotEmpty List<Integer> dishesIds
     ) {
@@ -83,7 +83,7 @@ public class MenuController {
 
     @PostMapping(path = "/unlink", produces = "application/json")
     @Transactional
-    public ResponseEntity<Object> unlinkDishFromMenu(
+    public ResponseEntity<Menu> unlinkDishFromMenu(
             @RequestParam(name = "menuId") @NotNull Integer menuId,
             @RequestParam(name = "dishesIds") @NotNull @NotEmpty List<Integer> dishesIds
     ) {
@@ -98,12 +98,12 @@ public class MenuController {
 
     @DeleteMapping(path = "/{id}")
     @Transactional
-    public ResponseEntity delete(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(
             @PathVariable @NotNull Integer id
     ) {
         Menu menu = menuJpaRepository.findById(id).orElseThrow(() -> getFoundException(Menu.class, id));
         menu.delete(SecurityUtil.getAuthUser());
         menuJpaRepository.save(menu);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

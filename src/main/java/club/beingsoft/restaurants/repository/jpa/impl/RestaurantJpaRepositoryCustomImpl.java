@@ -7,6 +7,8 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQuery;
+import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,7 +21,7 @@ public class RestaurantJpaRepositoryCustomImpl implements RestaurantJpaRepositor
     private EntityManager entityManager;
 
     @Override
-    public List<Restaurant> getAllWithDishesToday() {
+    public List<Restaurant> getAllWithDishesToDate(LocalDate date) {
         QRestaurant restaurant = QRestaurant.restaurant;
         QMenu menu = QMenu.menu;
         QDish dish = QDish.dish;
@@ -31,14 +33,14 @@ public class RestaurantJpaRepositoryCustomImpl implements RestaurantJpaRepositor
                 .where(restaurant.deleteDate.isNull()
                         .and(menu.deleteDate.isNull())
                         .and(dish.deleteDate.isNull())
-                        .and(menu.menuDate.eq(LocalDate.now()))
+                        .and(menu.menuDate.eq(date))
                 )
                 .distinct()
                 .fetch();
     }
 
     @Override
-    public List<RestaurantWithVotesTo> getSortedByVotesToday() {
+    public List<RestaurantWithVotesTo> getSortedByVotesToDate(LocalDate date) {
         QRestaurant restaurant = QRestaurant.restaurant;
         QVote vote = QVote.vote;
 
@@ -48,7 +50,7 @@ public class RestaurantJpaRepositoryCustomImpl implements RestaurantJpaRepositor
                 .select(restaurant.id, restaurant.name, vote.count().as(count))
                 .from(restaurant)
                 .innerJoin(vote).on(vote.restaurant.id.eq(restaurant.id))
-                .where(vote.voteDate.eq(LocalDate.now())
+                .where(vote.voteDate.eq(date)
                         .and(vote.deleteDate.isNull())
                         .and(restaurant.deleteDate.isNull()))
                 .groupBy(restaurant.id)

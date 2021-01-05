@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.List;
 
 import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
@@ -33,13 +34,13 @@ public class RestaurantController {
     }
 
     @GetMapping(path = "/withdishes", produces = "application/json")
-    public List<Restaurant> getAllWithDishesToday() {
-        return restaurantJpaRepository.getAllWithDishesToday();
+    public List<Restaurant> getAllWithDishesToDate(@RequestParam LocalDate date) {
+        return restaurantJpaRepository.getAllWithDishesToDate(date);
     }
 
     @GetMapping(path = "/sortedbyvotes", produces = "application/json")
-    public List<RestaurantWithVotesTo> getSortedByVotes() {
-        return restaurantJpaRepository.getSortedByVotesToday();
+    public List<RestaurantWithVotesTo> getSortedByVotes(@RequestParam LocalDate date) {
+        return restaurantJpaRepository.getSortedByVotesToDate(date);
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
@@ -49,7 +50,7 @@ public class RestaurantController {
 
     @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     @Transactional
-    public ResponseEntity<Object> save(
+    public ResponseEntity<Restaurant> save(
             @PathVariable Integer id,
             @RequestBody @NotNull Restaurant restaurant
     ) {
@@ -60,12 +61,12 @@ public class RestaurantController {
 
     @DeleteMapping(path = "/{id}")
     @Transactional
-    public ResponseEntity delete(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(
             @PathVariable @NotNull Integer id
     ) {
         Restaurant restaurant = restaurantJpaRepository.findById(id).orElseThrow(() -> getFoundException(Restaurant.class, id));
         restaurant.delete(SecurityUtil.getAuthUser());
         restaurantJpaRepository.save(restaurant);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

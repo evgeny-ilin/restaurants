@@ -61,7 +61,7 @@ public class VoteController {
 
     @PostMapping(path = "/", produces = "application/json")
     @Transactional
-    public ResponseEntity save(
+    public ResponseEntity<Vote> save(
             @RequestParam(name = "restaurant") @NotNull Integer restaurantId
     ) {
         LocalDate date = LocalDate.now(clock);

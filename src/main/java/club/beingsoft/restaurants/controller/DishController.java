@@ -44,7 +44,7 @@ public class DishController {
 
     @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     @Transactional
-    public ResponseEntity save(
+    public ResponseEntity<Dish> save(
             @PathVariable Integer id,
             @RequestBody @NotNull Dish dish
     ) {
@@ -54,8 +54,9 @@ public class DishController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
-    public ResponseEntity delete(
+    public void delete(
             @PathVariable @NotNull Integer id
     ) {
         Dish dish = get(id);
@@ -75,6 +76,5 @@ public class DishController {
         }
         dish.delete(SecurityUtil.getAuthUser());
         dishJpaRepository.save(dish);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

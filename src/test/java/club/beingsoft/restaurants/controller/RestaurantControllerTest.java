@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static club.beingsoft.restaurants.RestaurantTestData.*;
@@ -61,7 +62,7 @@ public class RestaurantControllerTest {
 
     @Test
     public void getAllRestaurantsWithDishesToday() {
-        List<Restaurant> restaurantsDB = restaurantController.getAllWithDishesToday();
+        List<Restaurant> restaurantsDB = restaurantController.getAllWithDishesToDate(LocalDate.now());
         Assert.assertEquals(RESTAURANTS_WITH_DISHES, restaurantsDB);
     }
 
@@ -96,7 +97,7 @@ public class RestaurantControllerTest {
 
     @Test
     public void getSortedByVotesRestaurants() {
-        List<RestaurantWithVotesTo> restaurantDB = restaurantController.getSortedByVotes();
+        List<RestaurantWithVotesTo> restaurantDB = restaurantController.getSortedByVotes(LocalDate.now());
         Assert.assertEquals(RESTAURANTS_WITH_VOTES_TO, restaurantDB);
     }
 }
