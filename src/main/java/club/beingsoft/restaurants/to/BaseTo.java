@@ -6,11 +6,11 @@ import club.beingsoft.restaurants.util.HasId;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public abstract class BaseTo implements HasId {
     protected User deleteUser;
-    protected LocalDateTime deleteDate;
+    protected ZonedDateTime deleteDate;
     protected Integer id;
 
     @NotBlank
@@ -52,11 +52,11 @@ public abstract class BaseTo implements HasId {
         this.deleteUser = deleteUser;
     }
 
-    public LocalDateTime getDeleteDate() {
+    public ZonedDateTime getDeleteDate() {
         return deleteDate;
     }
 
-    public void setDeleteDate(LocalDateTime deleteDate) {
+    public void setDeleteDate(ZonedDateTime deleteDate) {
         this.deleteDate = deleteDate;
     }
 

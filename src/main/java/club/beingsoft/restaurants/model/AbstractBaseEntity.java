@@ -7,7 +7,7 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 @MappedSuperclass
@@ -29,7 +29,7 @@ public abstract class AbstractBaseEntity implements HasId {
 
     @Column(name = "edit_date", nullable = false)
     @NotNull
-    protected LocalDateTime editDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    protected ZonedDateTime editDate = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,7 +38,7 @@ public abstract class AbstractBaseEntity implements HasId {
     protected User deleteUser;
 
     @Column(name = "delete_date")
-    protected LocalDateTime deleteDate;
+    protected ZonedDateTime deleteDate;
 
 
     protected AbstractBaseEntity() {
@@ -80,14 +80,14 @@ public abstract class AbstractBaseEntity implements HasId {
 
     public void delete(User user) {
         this.deleteUser = user;
-        this.deleteDate = LocalDateTime.now();
+        this.deleteDate = ZonedDateTime.now();
     }
 
     public User getDeleteUser() {
         return deleteUser;
     }
 
-    public LocalDateTime getDeleteDate() {
+    public ZonedDateTime getDeleteDate() {
         return deleteDate;
     }
 

@@ -7,7 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 public class UserTo extends BaseTo implements Serializable {
@@ -31,7 +31,7 @@ public class UserTo extends BaseTo implements Serializable {
     public UserTo() {
     }
 
-    public UserTo(Integer id, String name, String email, String password, Set<Role> roles, boolean enabled, LocalDateTime deleteDate, User deleteUser) {
+    public UserTo(Integer id, String name, String email, String password, Set<Role> roles, boolean enabled, ZonedDateTime deleteDate, User deleteUser) {
         super(id, name);
         this.email = email;
         this.password = password;
