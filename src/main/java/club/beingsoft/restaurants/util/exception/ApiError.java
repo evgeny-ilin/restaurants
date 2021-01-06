@@ -1,7 +1,6 @@
 package club.beingsoft.restaurants.util.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiError {
 
-    private HttpStatus status;
     private String message;
 
     private String debugMessage;
@@ -20,21 +18,14 @@ public class ApiError {
     ApiError() {
     }
 
-    ApiError(HttpStatus status) {
+    ApiError(Throwable ex) {
         this();
-        this.status = status;
-    }
-
-    ApiError(HttpStatus status, Throwable ex) {
-        this();
-        this.status = status;
         this.message = "Unexpected error";
         this.setDebugMessage(ex.getLocalizedMessage());
     }
 
-    ApiError(HttpStatus status, String message, Throwable ex) {
+    ApiError(String message, Throwable ex) {
         this();
-        this.status = status;
         this.message = message;
         this.setDebugMessage(ex.getLocalizedMessage());
     }
@@ -45,14 +36,6 @@ public class ApiError {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(HttpStatus status) {
-        this.status = status;
     }
 
     public String getDebugMessage() {
