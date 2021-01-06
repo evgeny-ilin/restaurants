@@ -3,7 +3,6 @@ package club.beingsoft.restaurants.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
 @Table(name = "votes",
@@ -50,6 +49,11 @@ public class Vote extends AbstractBaseEntity {
 
     public Restaurant getRestaurant() {
         return restaurant;
+    }
+
+    public void undelete() {
+        this.deleteDate = null;
+        this.deleteUser = null;
     }
 
     @Override

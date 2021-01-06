@@ -61,23 +61,21 @@ public class VoteController {
     public ResponseEntity<Vote> save(
             @RequestParam(name = "restaurant") @NotNull Integer restaurantId
     ) {
+        Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).orElseThrow(() -> getFoundException(Restaurant.class, restaurantId));
+        if (restaurant.isDeleted()) {
+            throw new VoteCantBeChangedException("Vote can't be changed due restaurant deleted");
+        }
+
         LocalDate date = LocalDate.now();
         Optional<Vote> voteDB = voteJpaRepository.findOne(
                 QVote.vote.user.id.eq(SecurityUtil.getAuthUser().getId())
                         .and(QVote.vote.voteDate.eq(date))
         );
 
-        Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).orElseThrow(() -> getFoundException(Restaurant.class, restaurantId));
-        if (restaurant.isDeleted()) {
-            throw new VoteCantBeChangedException("Vote can't be changed due restaurant deleted");
-        }
-
         Vote vote;
         if (voteDB.isPresent()) {
             vote = voteDB.get();
-            if (vote.isDeleted()) {
-                throw new VoteCantBeChangedException("Vote can't be changed due it's deleted");
-            }
+            vote.undelete();
             if (isAfterDeadLine()) {
                 throw new VoteCantBeChangedException("Vote can't be changed due deadline");
             }
