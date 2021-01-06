@@ -29,7 +29,7 @@ import static club.beingsoft.restaurants.util.ValidationUtil.*;
 
 
 @RestController
-@RequestMapping(path = "/rest/menus")
+@RequestMapping(path = "/rest/menus", produces = "application/json")
 @Transactional(readOnly = true)
 @Validated
 public class MenuController {
@@ -42,17 +42,17 @@ public class MenuController {
     @Autowired
     private DishJpaRepository dishJpaRepository;
 
-    @GetMapping(produces = "application/json")
+    @GetMapping
     public List<Menu> getAll() {
         return menuJpaRepository.findAll();
     }
 
-    @GetMapping(path = "/{id}", produces = "application/json")
+    @GetMapping(path = "/{id}")
     public Menu getMenu(@PathVariable @NotNull Integer id) {
         return menuJpaRepository.findById(id).orElseThrow(() -> getFoundException(Menu.class, id));
     }
 
-    @PostMapping(path = "/", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/", consumes = "application/json")
     @Transactional
     public ResponseEntity<Menu> save(
             @RequestParam(name = "menu") Integer menuId,
@@ -77,7 +77,7 @@ public class MenuController {
         }
     }
 
-    @PostMapping(path = "/link", produces = "application/json")
+    @PostMapping(path = "/link")
     @Transactional
     public ResponseEntity<Menu> linkDishToMenu(
             @RequestParam(name = "menuId") @NotNull Integer menuId,
@@ -92,7 +92,7 @@ public class MenuController {
         return ResponseEntity.ok(menuJpaRepository.save(menu));
     }
 
-    @PostMapping(path = "/unlink", produces = "application/json")
+    @PostMapping(path = "/unlink")
     @Transactional
     public ResponseEntity<Menu> unlinkDishFromMenu(
             @RequestParam(name = "menuId") @NotNull Integer menuId,

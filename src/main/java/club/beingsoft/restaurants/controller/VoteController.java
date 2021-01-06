@@ -24,7 +24,7 @@ import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 import static club.beingsoft.restaurants.util.ValidationUtil.isAfterDeadLine;
 
 @RestController
-@RequestMapping(path = "/rest/votes")
+@RequestMapping(path = "/rest/votes", produces = "application/json")
 @Transactional(readOnly = true)
 @Validated
 public class VoteController {
@@ -35,12 +35,12 @@ public class VoteController {
     @Autowired
     private RestaurantJpaRepository restaurantJpaRepository;
 
-    @GetMapping(produces = "application/json")
+    @GetMapping
     public List<Vote> getAll() {
         return (List<Vote>) voteJpaRepository.findAll(QVote.vote.user.id.eq(SecurityUtil.getAuthUser().getId()));
     }
 
-    @GetMapping(path = "/restaurant/{id}", produces = "application/json")
+    @GetMapping(path = "/restaurant/{id}")
     public List<Vote> getAllByRestaurant(@PathVariable @NotNull Integer id) {
         return (List<Vote>) voteJpaRepository.findAll(
                 QVote.vote.user.id.eq(SecurityUtil.getAuthUser().getId())
@@ -48,7 +48,7 @@ public class VoteController {
         );
     }
 
-    @GetMapping(path = "/{id}", produces = "application/json")
+    @GetMapping(path = "/{id}")
     public Vote get(@PathVariable @NotNull Integer id) {
         return voteJpaRepository.findOne(
                 QVote.vote.user.id.eq(SecurityUtil.getAuthUser().getId())
@@ -56,7 +56,7 @@ public class VoteController {
         ).orElseThrow(() -> getFoundException(Vote.class, id));
     }
 
-    @PostMapping(path = "/", produces = "application/json")
+    @PostMapping(path = "/")
     @Transactional
     public ResponseEntity<Vote> save(
             @RequestParam(name = "restaurant") @NotNull Integer restaurantId

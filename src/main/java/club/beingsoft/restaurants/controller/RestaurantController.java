@@ -23,34 +23,34 @@ import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
 import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 
 @RestController
-@RequestMapping(path = "/rest/restaurants")
+@RequestMapping(path = "/rest/restaurants", produces = "application/json")
 @Transactional(readOnly = true)
 @Validated
 public class RestaurantController {
     @Autowired
     private RestaurantJpaRepository restaurantJpaRepository;
 
-    @GetMapping(produces = "application/json")
+    @GetMapping
     public List<Restaurant> getAll() {
         return restaurantJpaRepository.findAll();
     }
 
-    @GetMapping(path = "/withdishes", produces = "application/json")
+    @GetMapping(path = "/withdishes")
     public List<Restaurant> getAllWithDishesToDate(@RequestParam LocalDate date) {
         return restaurantJpaRepository.getAllWithDishesToDate(date);
     }
 
-    @GetMapping(path = "/sortedbyvotes", produces = "application/json")
+    @GetMapping(path = "/sortedbyvotes")
     public List<RestaurantWithVotesTo> getSortedByVotes(@RequestParam LocalDate date) {
         return restaurantJpaRepository.getSortedByVotesToDate(date);
     }
 
-    @GetMapping(path = "/{id}", produces = "application/json")
+    @GetMapping(path = "/{id}")
     public Restaurant get(@PathVariable @NotNull Integer id) {
         return restaurantJpaRepository.findById(id).orElseThrow(() -> getFoundException(Restaurant.class, id));
     }
 
-    @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/{id}", consumes = "application/json")
     @Transactional
     public ResponseEntity<Restaurant> save(
             @PathVariable Integer id,

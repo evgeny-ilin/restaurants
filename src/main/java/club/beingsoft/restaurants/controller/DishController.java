@@ -23,7 +23,7 @@ import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
 import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 
 @RestController
-@RequestMapping(path = "/rest/dishes")
+@RequestMapping(path = "/rest/dishes", produces = "application/json")
 @Transactional(readOnly = true)
 @Validated
 public class DishController {
@@ -34,17 +34,17 @@ public class DishController {
     @Autowired
     private MenuJpaRepository menuJpaRepository;
 
-    @GetMapping(produces = "application/json")
+    @GetMapping
     public List<Dish> getAll() {
         return dishJpaRepository.findAll();
     }
 
-    @GetMapping(path = "/{id}", produces = "application/json")
+    @GetMapping(path = "/{id}")
     public Dish get(@PathVariable @NotNull Integer id) {
         return dishJpaRepository.findById(id).orElseThrow(() -> getFoundException(Dish.class, id));
     }
 
-    @PostMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/{id}", consumes = "application/json")
     @Transactional
     public ResponseEntity<Dish> save(
             @PathVariable Integer id,
