@@ -12,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.constraints.NotNull;
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -56,7 +58,16 @@ public class RestaurantController {
     ) {
         assureIdConsistent(restaurant, id);
         restaurant.setUser(SecurityUtil.getAuthUser());
-        return new ResponseEntity(restaurantJpaRepository.save(restaurant), HttpStatus.CREATED);
+        boolean isNew = restaurant.isNew();
+        restaurantJpaRepository.save(restaurant);
+        if (isNew) {
+            URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/rest/menus/{id}")
+                    .buildAndExpand(restaurant.getId()).toUri();
+            return ResponseEntity.created(uriOfNewResource).body(restaurant);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @DeleteMapping(path = "/{id}")

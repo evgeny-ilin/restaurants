@@ -6,6 +6,7 @@ import club.beingsoft.restaurants.model.Vote;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.VoteJpaRepository;
 import club.beingsoft.restaurants.util.SecurityUtil;
+import club.beingsoft.restaurants.util.ValidationUtil;
 import club.beingsoft.restaurants.util.exception.VoteCantBeChangedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,8 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.constraints.NotNull;
+import java.net.URI;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
+import static club.beingsoft.restaurants.util.ValidationUtil.isAfterDeadLine;
 
 @RestController
 @RequestMapping(path = "/rest/votes")
@@ -34,9 +38,6 @@ public class VoteController {
 
     @Autowired
     private RestaurantJpaRepository restaurantJpaRepository;
-
-    @Autowired
-    private Clock clock;
 
     @GetMapping(produces = "application/json")
     public List<Vote> getAll() {
@@ -64,11 +65,10 @@ public class VoteController {
     public ResponseEntity<Vote> save(
             @RequestParam(name = "restaurant") @NotNull Integer restaurantId
     ) {
-        LocalDate date = LocalDate.now(clock);
+        LocalDate date = LocalDate.now();
         Optional<Vote> voteDB = voteJpaRepository.findOne(
                 QVote.vote.user.id.eq(SecurityUtil.getAuthUser().getId())
                         .and(QVote.vote.voteDate.eq(date))
-                        .and(QVote.vote.restaurant.id.eq(restaurantId))
         );
 
         Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).orElseThrow(() -> getFoundException(Restaurant.class, restaurantId));
@@ -82,14 +82,22 @@ public class VoteController {
             if (vote.isDeleted()) {
                 throw new VoteCantBeChangedException("Vote can't be changed due it's deleted");
             }
-            LocalDateTime deadLine = vote.getVoteDate().atTime(11, 0);
-            if (deadLine.isBefore(LocalDateTime.now(clock))) {
+            if (isAfterDeadLine()) {
                 throw new VoteCantBeChangedException("Vote can't be changed due deadline");
             }
         } else {
             vote = new Vote(restaurant, date);
         }
 
-        return new ResponseEntity(voteJpaRepository.save(vote), HttpStatus.CREATED);
+        boolean isNew = vote.isNew();
+        voteJpaRepository.save(vote);
+        if (isNew) {
+            URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/rest/votes/{id}")
+                    .buildAndExpand(vote.getId()).toUri();
+            return ResponseEntity.created(uriOfNewResource).body(vote);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 }

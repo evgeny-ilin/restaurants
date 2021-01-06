@@ -1,5 +1,7 @@
 package club.beingsoft.restaurants.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -14,6 +16,7 @@ public class Menu extends AbstractBaseEntity {
 
     @Column(name = "menu_date", nullable = false)
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate menuDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -3,6 +3,7 @@ package club.beingsoft.restaurants;
 import club.beingsoft.restaurants.model.Vote;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static club.beingsoft.restaurants.RestaurantTestData.*;
@@ -14,7 +15,7 @@ public class VoteTestData {
     public static final int VOTE_2_ID = START_SEQ + 14;
     public static final int VOTE_3_ID = START_SEQ + 15;
     public static final int NOT_FOUND_ID = 10;
-    public static final Vote VOTE_1 = new Vote(VOTE_1_ID, RESTAURANT_1, LocalDate.now());
+    public static final Vote VOTE_1 = new Vote(VOTE_1_ID, RESTAURANT_1, LocalDate.now().minus(1, ChronoUnit.DAYS));
     public static final Vote VOTE_2 = new Vote(VOTE_2_ID, RESTAURANT_1, LocalDate.now());
     public static final Vote VOTE_3 = new Vote(VOTE_3_ID, RESTAURANT_2, LocalDate.now());
 

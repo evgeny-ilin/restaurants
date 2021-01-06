@@ -93,7 +93,8 @@ public class DishControllerTest {
 
     @Test
     public void updateDish() {
-        Dish dishDB = (Dish) dishController.save(DISH_3_ID, UPDATED_DISH).getBody();
+        dishController.save(DISH_3_ID, UPDATED_DISH);
+        Dish dishDB = dishController.get(DISH_3_ID);
         Assert.assertEquals(UPDATED_DISH, dishDB);
     }
 

@@ -23,7 +23,7 @@ public class RestaurantTestData {
     public static final List<Restaurant> RESTAURANTS = List.of(RESTAURANT_1, RESTAURANT_2, RESTAURANT_3, DELETED_RESTAURANT);
     public static final List<Restaurant> RESTAURANTS_WITH_DISHES = List.of(RESTAURANT_1);
     public static final List<RestaurantWithVotesTo> RESTAURANTS_WITH_VOTES_TO = List.of(
-            new RestaurantWithVotesTo(RESTAURANT_1_ID, RESTAURANT_1.getName(), 2L),
+            new RestaurantWithVotesTo(RESTAURANT_1_ID, RESTAURANT_1.getName(), 1L),
             new RestaurantWithVotesTo(RESTAURANT_2_ID, RESTAURANT_2.getName(), 1L));
 
     static {

@@ -15,9 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -63,7 +65,16 @@ public class MenuController {
             throw new EntityDeletedException(restaurant.getName() + " was deleted");
         menu.setRestaurant(restaurant);
         menu.setUser(SecurityUtil.getAuthUser());
-        return new ResponseEntity(menuJpaRepository.save(menu), HttpStatus.CREATED);
+        boolean isNew = menu.isNew();
+        menuJpaRepository.save(menu);
+        if (isNew) {
+            URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/rest/menus/{id}")
+                    .buildAndExpand(menu.getId()).toUri();
+            return ResponseEntity.created(uriOfNewResource).body(menu);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @PostMapping(path = "/link", produces = "application/json")

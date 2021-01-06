@@ -3,11 +3,14 @@ package club.beingsoft.restaurants.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
-@Table(name = "votes")
+@Table(name = "votes",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "vote_date"}, name = "votes_unique_user_date_idx")}
+        )
 public class Vote extends AbstractBaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
     private Restaurant restaurant;
@@ -47,5 +50,19 @@ public class Vote extends AbstractBaseEntity {
 
     public Restaurant getRestaurant() {
         return restaurant;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Vote vote = (Vote) o;
+        return restaurant.getId().equals(vote.restaurant.getId()) && voteDate.equals(vote.voteDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

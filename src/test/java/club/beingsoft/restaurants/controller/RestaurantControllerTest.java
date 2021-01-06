@@ -83,7 +83,8 @@ public class RestaurantControllerTest {
 
     @Test
     public void updateRestaurant() {
-        Restaurant restaurantDB = (Restaurant) restaurantController.save(RESTAURANT_3_ID, UPDATED_RESTAURANT).getBody();
+        restaurantController.save(RESTAURANT_3_ID, UPDATED_RESTAURANT);
+        Restaurant restaurantDB = restaurantController.get(RESTAURANT_3_ID);
         Assert.assertEquals(UPDATED_RESTAURANT, restaurantDB);
     }
 

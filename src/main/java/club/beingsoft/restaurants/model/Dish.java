@@ -1,5 +1,6 @@
 package club.beingsoft.restaurants.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ public class Dish extends AbstractNamedEntity {
 
     @Column(name = "price", nullable = false)
     @Range(min = 0, max = 100000)
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_FLOAT)
     private BigDecimal price;
 
     @ManyToMany(mappedBy = "dishes")

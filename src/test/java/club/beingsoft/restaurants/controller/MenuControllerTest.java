@@ -108,7 +108,8 @@ public class MenuControllerTest {
 
     @Test
     public void updateMenu() {
-        Menu menuDB = (Menu) menuController.save(MENU_1_ID, RESTAURANT_2_ID, MENU_1).getBody();
+        menuController.save(MENU_1_ID, RESTAURANT_2_ID, MENU_1);
+        Menu menuDB = menuController.getMenu(MENU_1_ID);
         Assert.assertEquals(UPDATED_MENU, menuDB);
     }
 

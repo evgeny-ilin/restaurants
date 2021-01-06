@@ -13,8 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.constraints.NotNull;
+import java.net.URI;
 import java.util.List;
 
 import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
@@ -50,7 +52,16 @@ public class DishController {
     ) {
         assureIdConsistent(dish, id);
         dish.setUser(SecurityUtil.getAuthUser());
-        return new ResponseEntity(dishJpaRepository.save(dish), HttpStatus.CREATED);
+        boolean isNew = dish.isNew();
+        dishJpaRepository.save(dish);
+        if (isNew) {
+            URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/rest/dishes/{id}")
+                    .buildAndExpand(dish.getId()).toUri();
+            return ResponseEntity.created(uriOfNewResource).body(dish);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @DeleteMapping(path = "/{id}")
