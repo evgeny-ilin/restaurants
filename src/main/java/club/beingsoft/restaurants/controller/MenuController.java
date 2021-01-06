@@ -89,7 +89,7 @@ public class MenuController {
         checkCollectionFound("DISHES", dishes);
         checkDishDeleted(dishes);
         menu.setDishes(dishes);
-        return new ResponseEntity(menuJpaRepository.save(menu), HttpStatus.CREATED);
+        return ResponseEntity.ok(menuJpaRepository.save(menu));
     }
 
     @PostMapping(path = "/unlink", produces = "application/json")
@@ -104,7 +104,7 @@ public class MenuController {
         checkCollectionFound("DISHES", dishes);
         checkDishDeleted(dishes);
         menu.removeDish(dishes);
-        return new ResponseEntity(menuJpaRepository.save(menu), HttpStatus.CREATED);
+        return ResponseEntity.ok(menuJpaRepository.save(menu));
     }
 
     @DeleteMapping(path = "/{id}")

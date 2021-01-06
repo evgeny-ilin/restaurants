@@ -6,10 +6,8 @@ import club.beingsoft.restaurants.model.Vote;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.VoteJpaRepository;
 import club.beingsoft.restaurants.util.SecurityUtil;
-import club.beingsoft.restaurants.util.ValidationUtil;
 import club.beingsoft.restaurants.util.exception.VoteCantBeChangedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -18,9 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.net.URI;
-import java.time.Clock;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
