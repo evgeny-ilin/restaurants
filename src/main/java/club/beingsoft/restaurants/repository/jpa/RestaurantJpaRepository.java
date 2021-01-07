@@ -28,6 +28,12 @@ public interface RestaurantJpaRepository extends CrudRepository<Restaurant, Inte
             nativeQuery = true)
     List<Restaurant> getAllWithDishesToDate(LocalDate date);
 
-    @Query(name = "Restaurant.getMostScored", nativeQuery = true)
-    List<RestaurantWithVotesTo> getMostScored(LocalDate date);
+    @Query("select new club.beingsoft.restaurants.to.RestaurantWithVotesTo(r.id,r.name,count(v.id)) from Restaurant r, Vote v " +
+            "where r.deleteDate is null " +
+            "and v.restaurant = r " +
+            "and v.deleteDate is null " +
+            "and v.voteDate = ?1 " +
+            "group by r.id,r.name " +
+            "order by 3 desc")
+    List<RestaurantWithVotesTo> getSortedByVotes(LocalDate date);
 }

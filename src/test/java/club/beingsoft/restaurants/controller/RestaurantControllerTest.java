@@ -75,7 +75,7 @@ public class RestaurantControllerTest {
     @Test
     public void saveNewRestaurant() {
         Restaurant newRestaurant = getNewRestaurant();
-        Restaurant restaurantDB = (Restaurant) restaurantController.save(null, newRestaurant).getBody();
+        Restaurant restaurantDB = restaurantController.save(null, newRestaurant).getBody();
         assert restaurantDB != null;
         newRestaurant.setId(restaurantDB.getId());
         Assert.assertEquals(newRestaurant, restaurantDB);

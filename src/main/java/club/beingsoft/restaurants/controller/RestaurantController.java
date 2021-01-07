@@ -46,7 +46,7 @@ public class RestaurantController {
         if (date == null) date = LocalDate.now();
 //        List<Tuple> result = restaurantJpaRepository.getSortedByVotesToDate(date);
 //        return result.stream().map(tuple -> new RestaurantWithVotesTo(tuple.get(0,Integer.class), tuple.get(1, String.class), tuple.get(2, Long.class))).collect(Collectors.toList());
-        return restaurantJpaRepository.getMostScored(date);
+        return restaurantJpaRepository.getSortedByVotes(date);
     }
 
     @GetMapping(path = "/{id}")
