@@ -37,12 +37,16 @@ public class RestaurantController {
 
     @GetMapping(path = "/withdishes")
     public List<Restaurant> getAllWithDishesToDate(@RequestParam LocalDate date) {
+        if (date == null) date = LocalDate.now();
         return restaurantJpaRepository.getAllWithDishesToDate(date);
     }
 
     @GetMapping(path = "/sortedbyvotes")
     public List<RestaurantWithVotesTo> getSortedByVotes(@RequestParam LocalDate date) {
-        return restaurantJpaRepository.getSortedByVotesToDate(date);
+        if (date == null) date = LocalDate.now();
+//        List<Tuple> result = restaurantJpaRepository.getSortedByVotesToDate(date);
+//        return result.stream().map(tuple -> new RestaurantWithVotesTo(tuple.get(0,Integer.class), tuple.get(1, String.class), tuple.get(2, Long.class))).collect(Collectors.toList());
+        return restaurantJpaRepository.getMostScored(date);
     }
 
     @GetMapping(path = "/{id}")

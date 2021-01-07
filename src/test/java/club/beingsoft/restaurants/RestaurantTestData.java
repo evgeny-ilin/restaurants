@@ -2,9 +2,11 @@ package club.beingsoft.restaurants;
 
 import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.to.RestaurantWithVotesTo;
-import static club.beingsoft.restaurants.UserTestData.ADMIN;
+
+import java.math.BigInteger;
 import java.util.List;
 
+import static club.beingsoft.restaurants.UserTestData.ADMIN;
 import static club.beingsoft.restaurants.model.AbstractBaseEntity.START_SEQ;
 
 public class RestaurantTestData {
@@ -23,8 +25,8 @@ public class RestaurantTestData {
     public static final List<Restaurant> RESTAURANTS = List.of(RESTAURANT_1, RESTAURANT_2, RESTAURANT_3, DELETED_RESTAURANT);
     public static final List<Restaurant> RESTAURANTS_WITH_DISHES = List.of(RESTAURANT_1);
     public static final List<RestaurantWithVotesTo> RESTAURANTS_WITH_VOTES_TO = List.of(
-            new RestaurantWithVotesTo(RESTAURANT_1_ID, RESTAURANT_1.getName(), 1L),
-            new RestaurantWithVotesTo(RESTAURANT_2_ID, RESTAURANT_2.getName(), 1L));
+            new RestaurantWithVotesTo(RESTAURANT_1_ID, RESTAURANT_1.getName(), BigInteger.ONE),
+            new RestaurantWithVotesTo(RESTAURANT_2_ID, RESTAURANT_2.getName(), BigInteger.ONE));
 
     static {
         UPDATED_RESTAURANT.setUser(ADMIN);
