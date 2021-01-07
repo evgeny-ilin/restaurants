@@ -56,7 +56,6 @@ public class UserService implements UserDetailsService {
         return asTo(repository.findByEmail(email).orElseThrow(() -> new NotFoundException("Not found user with email = " + email)));
     }
 
-    @Cacheable("users")
     public List<UserTo> getAll() {
         return repository.findAll().stream().map(UserUtil::asTo).collect(Collectors.toList());
     }

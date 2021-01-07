@@ -32,14 +32,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/rest/dishes/**").hasAnyRole(ADMIN, USER)
+                .antMatchers(HttpMethod.GET, "/rest/dishes/**").hasAnyRole(ADMIN, USER)
                 .antMatchers("/rest/dishes/**").hasRole(ADMIN)
-                .antMatchers(HttpMethod.GET,"/rest/menus/**").hasAnyRole(ADMIN, USER)
+                .antMatchers(HttpMethod.GET, "/rest/menus/**").hasAnyRole(ADMIN, USER)
                 .antMatchers("/rest/menus/**").hasRole(ADMIN)
-                .antMatchers(HttpMethod.GET,"/rest/restaurants/**").hasAnyRole(ADMIN, USER)
+                .antMatchers(HttpMethod.GET, "/rest/restaurants/**").hasAnyRole(ADMIN, USER)
                 .antMatchers("/rest/restaurants/**").hasRole(ADMIN)
                 .antMatchers("/rest/users/**").hasRole(ADMIN)
                 .antMatchers("/rest/votes/**").hasAnyRole(ADMIN, USER)
+                .antMatchers("/swagger-ui/**").hasRole(ADMIN)
                 .antMatchers("/**").denyAll()
                 .and().httpBasic()
                 .and().csrf().disable()

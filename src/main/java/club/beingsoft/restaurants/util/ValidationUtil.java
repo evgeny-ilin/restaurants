@@ -88,9 +88,7 @@ public class ValidationUtil {
 
     public static void assureIdConsistent(HasId bean, Integer id) {
 //      conservative when you reply, but accept liberally (http://stackoverflow.com/a/32728226/548473)
-        if (bean.isNew()) {
-            //bean.setId(id);
-        } else if (bean.id() != id) {
+        if (!bean.isNew() && bean.id() != id) {
             throw new IllegalRequestDataException(bean + " must be with id=" + id);
         }
     }
@@ -122,7 +120,12 @@ public class ValidationUtil {
         ValidationUtil.deadLine = deadLine;
     }
 
-    public static boolean isAfterDeadLine () {
+    public static boolean isAfterDeadLine() {
         return LocalDateTime.now().isAfter(deadLine);
+    }
+
+    public static LocalDate getLocalDate(LocalDate date) {
+        if (date == null) date = LocalDate.now();
+        return date;
     }
 }

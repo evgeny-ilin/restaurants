@@ -9,6 +9,8 @@ import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,7 @@ import static club.beingsoft.restaurants.util.ValidationUtil.*;
 @RequestMapping(path = "/rest/menus", produces = "application/json")
 @Transactional(readOnly = true)
 @Validated
+@Tag(name = "Меню", description = "Управление меню, добавление/удаление блюд в меню")
 public class MenuController {
     @Autowired
     private MenuJpaRepository menuJpaRepository;
@@ -79,6 +82,7 @@ public class MenuController {
 
     @PostMapping(path = "/link")
     @Transactional
+    @Operation(summary = "Привязка списка блюд к меню")
     public ResponseEntity<Menu> linkDishToMenu(
             @RequestParam(name = "menuId") @NotNull Integer menuId,
             @RequestParam(name = "dishesIds") @NotNull @NotEmpty List<Integer> dishesIds
@@ -94,6 +98,7 @@ public class MenuController {
 
     @PostMapping(path = "/unlink")
     @Transactional
+    @Operation(summary = "Удаляем блюда по списку из меню")
     public ResponseEntity<Menu> unlinkDishFromMenu(
             @RequestParam(name = "menuId") @NotNull Integer menuId,
             @RequestParam(name = "dishesIds") @NotNull @NotEmpty List<Integer> dishesIds

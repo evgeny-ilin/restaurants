@@ -6,8 +6,12 @@ import club.beingsoft.restaurants.model.QMenu;
 import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
 import club.beingsoft.restaurants.util.SecurityUtil;
+import club.beingsoft.restaurants.util.ValidationUtil;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
@@ -26,6 +31,7 @@ import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 @RequestMapping(path = "/rest/dishes", produces = "application/json")
 @Transactional(readOnly = true)
 @Validated
+@Tag(name = "Блюда", description = "Управление блюдами. Связка блюд с меню через контроллер меню")
 public class DishController {
 
     @Autowired
@@ -39,9 +45,23 @@ public class DishController {
         return dishJpaRepository.findAll();
     }
 
+    @GetMapping(path = "/restaurant")
+    @Operation(summary = "Список блюд для ресторана на дату")
+    public List<Dish> getDishesForRestaurant(@RequestParam @NotNull Integer restaurantId,
+                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        date = ValidationUtil.getLocalDate(date);
+        return dishJpaRepository.getDishesForRestaurant(restaurantId, date);
+    }
+
     @GetMapping(path = "/{id}")
     public Dish get(@PathVariable @NotNull Integer id) {
         return dishJpaRepository.findById(id).orElseThrow(() -> getFoundException(Dish.class, id));
+    }
+
+    @GetMapping(path = "/menu/{id}")
+    @Operation(summary = "Список блюд для меню")
+    public List<Dish> getDishesForMenu(@PathVariable @NotNull Integer id) {
+        return dishJpaRepository.getDishesForMenu(id);
     }
 
     @PostMapping(path = "/{id}", consumes = "application/json")

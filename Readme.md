@@ -8,8 +8,10 @@ Application support REST API
 Cople of curl operations:
 Login curl -v --cookie-jar cookie -d username=admin@mail.ru -d password=1 -L http://localhost:8080/login
 
-Get all users curl -sL -b cookie "http://localhost:8080/rest/users"
+Get all restaurants curl -u admin@mail.ru:1 -i -H 'Accept:application/json' localhost:8080/rest/restaurants
 
-Get most voted restaurants curl -sL -b cookie "localhost:8080/rest/restaurants/sortedbyvotes"
+Get most voted restaurants curl -u admin@mail.ru:1 -i -H 'Accept:application/json' localhost:
+8080/rest/restaurants/sortedbyvotes?date
 
-Vote restaurant curl -d "restaurant=100004" -b cookie "localhost:8080/rest/votes/
+Vote restaurant curl -u admin@mail.ru:1 -i -H 'Accept:application/json' -d "restaurant=100004" "localhost:
+8080/rest/votes/

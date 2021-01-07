@@ -7,6 +7,7 @@ import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.VoteJpaRepository;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.VoteCantBeChangedException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ import static club.beingsoft.restaurants.util.ValidationUtil.isAfterDeadLine;
 @RequestMapping(path = "/rest/votes", produces = "application/json")
 @Transactional(readOnly = true)
 @Validated
+@Tag(name = "Голосование", description = "Голосвание согласно правилам")
 public class VoteController {
 
     @Autowired

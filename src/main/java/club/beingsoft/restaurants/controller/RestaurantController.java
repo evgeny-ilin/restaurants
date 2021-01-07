@@ -6,7 +6,11 @@ import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.to.RestaurantWithVotesTo;
 import club.beingsoft.restaurants.util.SecurityUtil;
+import club.beingsoft.restaurants.util.ValidationUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +30,7 @@ import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 @RequestMapping(path = "/rest/restaurants", produces = "application/json")
 @Transactional(readOnly = true)
 @Validated
+@Tag(name = "Рестораны", description = "Управление ресторанами. Можно получить некоторую статистику")
 public class RestaurantController {
     @Autowired
     private RestaurantJpaRepository restaurantJpaRepository;
@@ -36,16 +41,16 @@ public class RestaurantController {
     }
 
     @GetMapping(path = "/withdishes")
-    public List<Restaurant> getAllWithDishesToDate(@RequestParam LocalDate date) {
-        if (date == null) date = LocalDate.now();
+    @Operation(summary = "Рестораны с блюдами", description = "Выводит список действующих ресторанов у которых есть действующие блюда и меню")
+    public List<Restaurant> getAllWithDishesToDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        date = ValidationUtil.getLocalDate(date);
         return restaurantJpaRepository.getAllWithDishesToDate(date);
     }
 
     @GetMapping(path = "/sortedbyvotes")
-    public List<RestaurantWithVotesTo> getSortedByVotes(@RequestParam LocalDate date) {
-        if (date == null) date = LocalDate.now();
-//        List<Tuple> result = restaurantJpaRepository.getSortedByVotesToDate(date);
-//        return result.stream().map(tuple -> new RestaurantWithVotesTo(tuple.get(0,Integer.class), tuple.get(1, String.class), tuple.get(2, Long.class))).collect(Collectors.toList());
+    @Operation(summary = "Рестораны с голосами", description = "Выводит список действующих ресторанов, отсортированных по количеству голосов на дату")
+    public List<RestaurantWithVotesTo> getSortedByVotes(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        date = ValidationUtil.getLocalDate(date);
         return restaurantJpaRepository.getSortedByVotes(date);
     }
 
