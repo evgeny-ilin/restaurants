@@ -15,13 +15,13 @@ public interface DishJpaRepository extends CrudRepository<Dish, Integer>, Queryd
     @Override
     List<Dish> findAll();
 
-    @Query("select d from Dish d join Menu  m " +
+    @Query("select d from Dish d join d.menus  m " +
             "where m.id = ?1 " +
             "and m.deleteDate is null " +
             "and d.deleteDate is null ")
     List<Dish> getDishesForMenu(Integer menuId);
 
-    @Query("select d from Restaurant  r join Menu m on m.restaurant.id = r.id join Dish d m.dishes d  " +
+    @Query("select d from Restaurant  r join Menu m on m.restaurant.id = r.id join m.dishes d " +
             "where r.id = :restaurantId " +
             "and m.menuDate = :menuDate " +
             "and m.deleteDate is null " +

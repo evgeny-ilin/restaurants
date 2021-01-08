@@ -58,10 +58,10 @@ public class DishController {
         return dishJpaRepository.findById(id).orElseThrow(() -> getFoundException(Dish.class, id));
     }
 
-    @GetMapping(path = "/menu/{id}")
+    @GetMapping(path = "/menu/{menuId}")
     @Operation(summary = "Список блюд для меню")
-    public List<Dish> getDishesForMenu(@PathVariable @NotNull Integer id) {
-        return dishJpaRepository.getDishesForMenu(id);
+    public List<Dish> getDishesForMenu(@PathVariable @NotNull Integer menuId) {
+        return dishJpaRepository.getDishesForMenu(menuId);
     }
 
     @PostMapping(path = "/{id}", consumes = "application/json")
