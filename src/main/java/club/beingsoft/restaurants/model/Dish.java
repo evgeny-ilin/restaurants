@@ -18,7 +18,7 @@ public class Dish extends AbstractNamedEntity {
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_FLOAT)
     private BigDecimal price;
 
-    @ManyToMany(mappedBy = "dishes")
+    @ManyToMany(mappedBy = "dishes", fetch = FetchType.LAZY)
     private Set<Menu> menus = new HashSet<>();
 
     public Dish() {

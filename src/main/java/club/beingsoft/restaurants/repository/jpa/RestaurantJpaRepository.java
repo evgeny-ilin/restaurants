@@ -36,4 +36,11 @@ public interface RestaurantJpaRepository extends CrudRepository<Restaurant, Inte
             "group by r.id,r.name " +
             "order by 3 desc")
     List<RestaurantWithVotesTo> getSortedByVotes(LocalDate date);
+
+    @Query("select r from Menu m join m.restaurant r join m.dishes d " +
+            "where r.deleteDate is null " +
+            "and m.deleteDate is null " +
+            "and d.deleteDate is null " +
+            "and m.menuDate = ?1")
+    List<Restaurant> getAllHierarchy(LocalDate date);
 }

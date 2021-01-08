@@ -41,7 +41,7 @@ public class RestaurantController {
     }
 
     @GetMapping(path = "/withdishes")
-    @Operation(summary = "Рестораны с блюдами", description = "Выводит список действующих ресторанов у которых есть действующие блюда и меню")
+    @Operation(summary = "Рестораны, имеющие блюда", description = "Выводит список действующих ресторанов у которых есть действующие блюда и меню")
     public List<Restaurant> getAllWithDishesToDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         date = ValidationUtil.getLocalDate(date);
         return restaurantJpaRepository.getAllWithDishesToDate(date);
@@ -52,6 +52,13 @@ public class RestaurantController {
     public List<RestaurantWithVotesTo> getSortedByVotes(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         date = ValidationUtil.getLocalDate(date);
         return restaurantJpaRepository.getSortedByVotes(date);
+    }
+
+    @GetMapping(path = "/hierarchy")
+    @Operation(summary = "Рестораны с блюдами", description = "Выводит рестораны, меню и блюда на дату")
+    public List<Restaurant> getAllHierarchy(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        date = ValidationUtil.getLocalDate(date);
+        return restaurantJpaRepository.getAllHierarchy(date);
     }
 
     @GetMapping(path = "/{id}")
