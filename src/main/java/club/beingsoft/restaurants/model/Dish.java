@@ -1,5 +1,6 @@
 package club.beingsoft.restaurants.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.Range;
 
@@ -19,6 +20,7 @@ public class Dish extends AbstractNamedEntity {
     private BigDecimal price;
 
     @ManyToMany(mappedBy = "dishes", fetch = FetchType.LAZY)
+    @JsonBackReference
     private Set<Menu> menus = new HashSet<>();
 
     public Dish() {

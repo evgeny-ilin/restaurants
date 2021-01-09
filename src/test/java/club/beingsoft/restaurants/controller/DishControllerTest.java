@@ -24,7 +24,8 @@ import java.util.List;
 
 import static club.beingsoft.restaurants.DishTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
-
+//TODO Переделать equals на свой мэтчер
+//TODO Кэш в контроллерах
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)

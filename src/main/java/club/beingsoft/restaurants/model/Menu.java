@@ -1,6 +1,7 @@
 package club.beingsoft.restaurants.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ public class Menu extends AbstractBaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
+    @JsonManagedReference
     private Restaurant restaurant;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -29,6 +31,7 @@ public class Menu extends AbstractBaseEntity {
             joinColumns = {@JoinColumn(name = "menu_id")},
             inverseJoinColumns = {@JoinColumn(name = "dish_id")}
     )
+    @JsonManagedReference
     private Set<Dish> dishes = new HashSet<>();
 
     public Menu() {

@@ -2,6 +2,7 @@ package club.beingsoft.restaurants.controller;
 
 //Field selection + pagging + version API + X-HTTP-Method-Override https://medium.com/@mwaysolutions/10-best-practices-for-better-restful-api-cbe81b06f291
 
+import club.beingsoft.restaurants.model.Menu;
 import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.to.RestaurantWithVotesTo;
@@ -56,7 +57,7 @@ public class RestaurantController {
 
     @GetMapping(path = "/hierarchy")
     @Operation(summary = "Рестораны с блюдами", description = "Выводит рестораны, меню и блюда на дату")
-    public List<Restaurant> getAllHierarchy(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+    public List<Menu> getAllHierarchy(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         date = ValidationUtil.getLocalDate(date);
         return restaurantJpaRepository.getAllHierarchy(date);
     }

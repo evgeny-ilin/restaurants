@@ -21,6 +21,7 @@ public interface DishJpaRepository extends CrudRepository<Dish, Integer>, Queryd
             "and d.deleteDate is null ")
     List<Dish> getDishesForMenu(Integer menuId);
 
+
     @Query("select d from Restaurant  r join Menu m on m.restaurant.id = r.id join m.dishes d " +
             "where r.id = :restaurantId " +
             "and m.menuDate = :menuDate " +
