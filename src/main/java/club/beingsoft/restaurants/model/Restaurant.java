@@ -11,7 +11,7 @@ import java.util.List;
 public class Restaurant extends AbstractNamedEntity {
     @OneToMany(fetch = FetchType.LAZY)
     @JsonBackReference
-    private List<Menu> menu;
+    private List<Menu> menus;
 
     public Restaurant() {
     }

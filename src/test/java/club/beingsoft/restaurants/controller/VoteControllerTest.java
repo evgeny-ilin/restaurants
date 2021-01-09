@@ -3,10 +3,6 @@ package club.beingsoft.restaurants.controller;
 import club.beingsoft.restaurants.model.User;
 import club.beingsoft.restaurants.model.Vote;
 import club.beingsoft.restaurants.util.SecurityUtil;
-
-import static club.beingsoft.restaurants.UserTestData.USER_2;
-import static club.beingsoft.restaurants.util.ValidationUtil.*;
-
 import club.beingsoft.restaurants.util.exception.NotFoundException;
 import club.beingsoft.restaurants.util.exception.VoteCantBeChangedException;
 import org.junit.*;
@@ -31,7 +27,9 @@ import java.util.List;
 
 import static club.beingsoft.restaurants.RestaurantTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
+import static club.beingsoft.restaurants.UserTestData.USER_2;
 import static club.beingsoft.restaurants.VoteTestData.*;
+import static club.beingsoft.restaurants.util.ValidationUtil.setDeadLine;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -76,19 +74,19 @@ public class VoteControllerTest {
     @Test
     public void getAllVotes() {
         List<Vote> votesDB = voteController.getAll();
-        Assert.assertEquals(VOTES, votesDB);
+        VOTE_MATCHER.assertMatch(votesDB, VOTES);
     }
 
     @Test
     public void getAllVotesByRestaurant() {
         List<Vote> votesDB = voteController.getAllByRestaurant(RESTAURANT_1_ID);
-        Assert.assertEquals(VOTES_REST_1, votesDB);
+        VOTE_MATCHER.assertMatch(votesDB, VOTES_REST_1);
     }
 
     @Test
     public void getVote() {
         Vote voteDB = voteController.get(VOTE_1_ID);
-        Assert.assertEquals(VOTE_1, voteDB);
+        VOTE_MATCHER.assertMatch(voteDB, VOTE_1);
     }
 
     @Test
@@ -101,7 +99,7 @@ public class VoteControllerTest {
         Vote voteDB = voteController.save(RESTAURANT_3_ID).getBody();
         Vote newVote = getNewVote();
         newVote.setId(voteDB.getId());
-        Assert.assertEquals(newVote, voteDB);
+        VOTE_MATCHER.assertMatch(voteDB, newVote);
     }
 
     @Test
@@ -112,7 +110,7 @@ public class VoteControllerTest {
         Vote newVote = getNewVote();
         newVote.setId(voteDB.getId());
         newVote.setRestaurant(RESTAURANT_2);
-        Assert.assertEquals(newVote, voteDB);
+        VOTE_MATCHER.assertMatch(voteDB, newVote);
     }
 
     @Test

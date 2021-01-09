@@ -19,12 +19,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static club.beingsoft.restaurants.DishTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
-//TODO Переделать equals на свой мэтчер
 //TODO Кэш в контроллерах
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -58,14 +58,15 @@ public class DishControllerTest {
 
     @Test
     public void getAllDishes() {
-        List<Dish> dishDB = dishController.getAll();
-        Assert.assertEquals(DISHES, dishDB);
+        List<Dish> dishesDB = dishController.getAll();
+        DISH_MATCHER.assertMatch(dishesDB, DISHES);
     }
 
     @Test
     public void getDish() {
         Dish dishDB = dishController.get(DISH_1_ID);
-        Assert.assertEquals(DISH_1, dishDB);
+//        Assert.assertEquals(DISH_1, dishDB);
+        DISH_MATCHER.assertMatch(dishDB, DISH_1);
     }
 
     @Test
@@ -84,7 +85,7 @@ public class DishControllerTest {
         assert dishDB != null;
         Dish newDish = getNewDish();
         newDish.setId(dishDB.getId());
-        Assert.assertEquals(newDish, dishDB);
+        DISH_MATCHER.assertMatch(dishDB, newDish);
     }
 
     @Test
@@ -96,14 +97,15 @@ public class DishControllerTest {
     public void updateDish() {
         dishController.save(DISH_3_ID, UPDATED_DISH);
         Dish dishDB = dishController.get(DISH_3_ID);
-        Assert.assertEquals(UPDATED_DISH, dishDB);
+        DISH_MATCHER.assertMatch(dishDB, UPDATED_DISH);
     }
 
     @Test
+    @Transactional
     public void deleteDish() {
         dishController.delete(DELETED_DISH_ID);
         Dish dishDB = dishController.get(DELETED_DISH_ID);
-        Assert.assertEquals(DELETED_DISH, dishDB);
+        DISH_MATCHER.assertMatch(dishDB, DELETED_DISH);
     }
 
     @Test

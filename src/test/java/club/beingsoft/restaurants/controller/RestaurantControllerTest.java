@@ -18,11 +18,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
 import static club.beingsoft.restaurants.RestaurantTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
+//TODO Add getHierarchyTest
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -57,19 +59,19 @@ public class RestaurantControllerTest {
     @Test
     public void getAllRestaurants() {
         List<Restaurant> restaurantsDB = restaurantController.getAll();
-        Assert.assertEquals(RESTAURANTS, restaurantsDB);
+        RESTAURANT_MATCHER.assertMatch(restaurantsDB, RESTAURANTS);
     }
 
     @Test
     public void getAllRestaurantsWithDishesToday() {
         List<Restaurant> restaurantsDB = restaurantController.getAllWithDishesToDate(LocalDate.now());
-        Assert.assertEquals(RESTAURANTS_WITH_DISHES, restaurantsDB);
+        RESTAURANT_MATCHER.assertMatch(restaurantsDB, RESTAURANTS_WITH_DISHES);
     }
 
     @Test
     public void getRestaurant() {
         Restaurant restaurantDB = restaurantController.get(RESTAURANT_1_ID);
-        Assert.assertEquals(RESTAURANT_1, restaurantDB);
+        RESTAURANT_MATCHER.assertMatch(restaurantDB, RESTAURANT_1);
     }
 
     @Test
@@ -78,21 +80,22 @@ public class RestaurantControllerTest {
         Restaurant restaurantDB = restaurantController.save(null, newRestaurant).getBody();
         assert restaurantDB != null;
         newRestaurant.setId(restaurantDB.getId());
-        Assert.assertEquals(newRestaurant, restaurantDB);
+        RESTAURANT_MATCHER.assertMatch(restaurantDB, newRestaurant);
     }
 
     @Test
     public void updateRestaurant() {
         restaurantController.save(RESTAURANT_3_ID, UPDATED_RESTAURANT);
         Restaurant restaurantDB = restaurantController.get(RESTAURANT_3_ID);
-        Assert.assertEquals(UPDATED_RESTAURANT, restaurantDB);
+        RESTAURANT_MATCHER.assertMatch(restaurantDB, UPDATED_RESTAURANT);
     }
 
     @Test
+    @Transactional
     public void deleteRestaurant() {
         restaurantController.delete(DELETED_RESTAURANT_ID);
         Restaurant restaurantDB = restaurantController.get(DELETED_RESTAURANT_ID);
-        Assert.assertEquals(DELETED_RESTAURANT, restaurantDB);
+        RESTAURANT_MATCHER.assertMatch(restaurantDB, DELETED_RESTAURANT);
     }
 
 

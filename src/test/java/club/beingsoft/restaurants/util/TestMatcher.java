@@ -1,6 +1,6 @@
-package club.beingsoft.restaurants;
+package club.beingsoft.restaurants.util;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,6 +9,7 @@ public class TestMatcher<T> {
     private final Class<T> clazz;
     private final BiConsumer<T, T> assertion;
     private final BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion;
+    private static String[] IGNORING_FIELDS;
 
     private TestMatcher(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion) {
         this.clazz = clazz;
@@ -27,6 +28,7 @@ public class TestMatcher<T> {
     }
 
     public static <T> TestMatcher<T> usingFieldsWithIgnoringAssertions(Class<T> clazz, String... fieldsToIgnore) {
+        IGNORING_FIELDS = Arrays.copyOf(fieldsToIgnore, fieldsToIgnore.length);
         return usingAssertions(clazz,
                 (a, e) -> assertThat(a).isEqualToIgnoringGivenFields(e, fieldsToIgnore),
                 (a, e) -> assertThat(a).usingElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(e));
@@ -38,11 +40,12 @@ public class TestMatcher<T> {
 
     @SafeVarargs
     public final void assertMatch(Iterable<T> actual, T... expected) {
-        assertMatch(actual, List.of(expected));
+        assertMatch(actual, expected);
     }
 
     public void assertMatch(Iterable<T> actual, Iterable<T> expected) {
-        iterableAssertion.accept(actual, expected);
+        //iterableAssertion.accept(actual, expected);
+        assertThat(actual).usingRecursiveComparison().ignoringFields(IGNORING_FIELDS).isEqualTo(expected);
     }
 
 //    public ResultMatcher contentJson(T expected) {

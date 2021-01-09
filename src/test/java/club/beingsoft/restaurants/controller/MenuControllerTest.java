@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
@@ -58,13 +59,13 @@ public class MenuControllerTest {
     @Test
     public void getAllMenus() {
         List<Menu> menusDB = menuController.getAll();
-        Assert.assertEquals(MENUS, menusDB);
+        MENU_MATCHER.assertMatch(menusDB, MENUS);
     }
 
     @Test
     public void getMenu() {
         Menu menuDB = menuController.getMenu(MENU_1_ID);
-        Assert.assertEquals(MENU_1, menuDB);
+        MENU_MATCHER.assertMatch(menuDB, MENU_1);
     }
 
     @Test
@@ -83,7 +84,7 @@ public class MenuControllerTest {
         Menu menuDB = (Menu) menuController.save(null, RESTAURANT_3_ID, newMenu).getBody();
         assert menuDB != null;
         newMenu.setId(menuDB.getId());
-        Assert.assertEquals(newMenu, menuDB);
+        MENU_MATCHER.assertMatch(menuDB, newMenu);
     }
 
     @Test
@@ -110,13 +111,13 @@ public class MenuControllerTest {
     public void updateMenu() {
         menuController.save(MENU_1_ID, RESTAURANT_2_ID, MENU_1);
         Menu menuDB = menuController.getMenu(MENU_1_ID);
-        Assert.assertEquals(UPDATED_MENU, menuDB);
+        MENU_MATCHER.assertMatch(menuDB, UPDATED_MENU);
     }
 
     @Test
     public void linkDishToMenu() {
-        Menu menuDB = (Menu) menuController.linkDishToMenu(MENU_2_ID, DISHES_IDs).getBody();
-        Assert.assertEquals(MenuTestData.getLinkedMenu(), menuDB);
+        Menu menuDB = menuController.linkDishToMenu(MENU_2_ID, DISHES_IDs).getBody();
+        MENU_MATCHER.assertMatch(menuDB, MenuTestData.getLinkedMenu());
     }
 
     @Test
@@ -162,14 +163,15 @@ public class MenuControllerTest {
     @Test
     public void unlinkDishFromMenu() {
         Menu menuDB = (Menu) menuController.unlinkDishFromMenu(MENU_2_ID, DISHES_IDs).getBody();
-        Assert.assertEquals(MenuTestData.getUnLinkedMenu(), menuDB);
+        MENU_MATCHER.assertMatch(menuDB, MenuTestData.getUnLinkedMenu());
     }
 
     @Test
+    @Transactional
     public void deleteMenu() {
         menuController.delete(DELETED_MENU_ID);
         Menu menuDB = menuController.getMenu(DELETED_MENU_ID);
-        Assert.assertEquals(DELETED_MENU, menuDB);
+        MENU_MATCHER.assertMatch(menuDB, DELETED_MENU);
     }
 
     @Test
