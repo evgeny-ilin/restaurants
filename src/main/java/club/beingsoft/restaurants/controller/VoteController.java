@@ -9,6 +9,8 @@ import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.VoteCantBeChangedException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -43,6 +45,7 @@ public class VoteController {
     }
 
     @GetMapping(path = "/restaurant/{id}")
+    @Cacheable("votes")
     public List<Vote> getAllByRestaurant(@PathVariable @NotNull Integer id) {
         return (List<Vote>) voteJpaRepository.findAll(
                 QVote.vote.user.id.eq(SecurityUtil.getAuthUser().getId())
@@ -51,6 +54,7 @@ public class VoteController {
     }
 
     @GetMapping(path = "/{id}")
+    @Cacheable("votes")
     public Vote get(@PathVariable @NotNull Integer id) {
         return voteJpaRepository.findOne(
                 QVote.vote.user.id.eq(SecurityUtil.getAuthUser().getId())
@@ -59,6 +63,7 @@ public class VoteController {
     }
 
     @PostMapping(path = "/")
+    @CacheEvict("votes")
     @Transactional
     public ResponseEntity<Vote> save(
             @RequestParam(name = "restaurant") @NotNull Integer restaurantId

@@ -11,6 +11,8 @@ import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +48,7 @@ public class DishController {
     }
 
     @GetMapping(path = "/restaurant")
+    @Cacheable("dishes")
     @Operation(summary = "Список блюд для ресторана на дату")
     public List<Dish> getDishesForRestaurant(@RequestParam @NotNull Integer restaurantId,
                                              @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
@@ -54,17 +57,20 @@ public class DishController {
     }
 
     @GetMapping(path = "/{id}")
+    @Cacheable("dishes")
     public Dish get(@PathVariable @NotNull Integer id) {
         return dishJpaRepository.findById(id).orElseThrow(() -> getFoundException(Dish.class, id));
     }
 
     @GetMapping(path = "/menu/{menuId}")
+    @Cacheable("dishes")
     @Operation(summary = "Список блюд для меню")
     public List<Dish> getDishesForMenu(@PathVariable @NotNull Integer menuId) {
         return dishJpaRepository.getDishesForMenu(menuId);
     }
 
     @PostMapping(path = "/{id}", consumes = "application/json")
+    @CacheEvict("dishes")
     @Transactional
     public ResponseEntity<Dish> save(
             @PathVariable Integer id,
@@ -86,6 +92,7 @@ public class DishController {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict("dishes")
     @Transactional
     public void delete(
             @PathVariable @NotNull Integer id

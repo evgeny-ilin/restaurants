@@ -11,6 +11,8 @@ import club.beingsoft.restaurants.util.ValidationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +44,7 @@ public class RestaurantController {
     }
 
     @GetMapping(path = "/withdishes")
+    @Cacheable("restaurants")
     @Operation(summary = "Рестораны, имеющие блюда", description = "Выводит список действующих ресторанов у которых есть действующие блюда и меню")
     public List<Restaurant> getAllWithDishesToDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         date = ValidationUtil.getLocalDate(date);
@@ -49,6 +52,7 @@ public class RestaurantController {
     }
 
     @GetMapping(path = "/sortedbyvotes")
+    @Cacheable("restaurantsTo")
     @Operation(summary = "Рестораны с голосами", description = "Выводит список действующих ресторанов, отсортированных по количеству голосов на дату")
     public List<RestaurantWithVotesTo> getSortedByVotes(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         date = ValidationUtil.getLocalDate(date);
@@ -56,6 +60,7 @@ public class RestaurantController {
     }
 
     @GetMapping(path = "/hierarchy")
+    @Cacheable("menus")
     @Operation(summary = "Рестораны с блюдами", description = "Выводит рестораны, меню и блюда на дату")
     public List<Menu> getAllHierarchy(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         date = ValidationUtil.getLocalDate(date);
@@ -63,11 +68,13 @@ public class RestaurantController {
     }
 
     @GetMapping(path = "/{id}")
+    @Cacheable("restaurants")
     public Restaurant get(@PathVariable @NotNull Integer id) {
         return restaurantJpaRepository.findById(id).orElseThrow(() -> getFoundException(Restaurant.class, id));
     }
 
     @PostMapping(path = "/{id}", consumes = "application/json")
+    @CacheEvict({"restaurants", "restaurantsTo", "menus"})
     @Transactional
     public ResponseEntity<Restaurant> save(
             @PathVariable Integer id,
@@ -89,6 +96,7 @@ public class RestaurantController {
 
     @DeleteMapping(path = "/{id}")
     @Transactional
+    @CacheEvict({"restaurants", "restaurantsTo", "menus"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
             @PathVariable @NotNull Integer id

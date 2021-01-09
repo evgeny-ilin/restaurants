@@ -12,6 +12,8 @@ import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,12 +53,14 @@ public class MenuController {
     }
 
     @GetMapping(path = "/{id}")
+    @Cacheable("menus")
     public Menu getMenu(@PathVariable @NotNull Integer id) {
         return menuJpaRepository.findById(id).orElseThrow(() -> getFoundException(Menu.class, id));
     }
 
     @PostMapping(path = "/", consumes = "application/json")
     @Transactional
+    @CacheEvict("menus")
     public ResponseEntity<Menu> save(
             @RequestParam(name = "menu") Integer menuId,
             @RequestParam(name = "restaurant") @NotNull Integer restaurantId,
@@ -82,6 +86,7 @@ public class MenuController {
 
     @PostMapping(path = "/link")
     @Transactional
+    @CacheEvict("menus")
     @Operation(summary = "Привязка списка блюд к меню")
     public ResponseEntity<Menu> linkDishToMenu(
             @RequestParam(name = "menuId") @NotNull Integer menuId,
@@ -98,6 +103,7 @@ public class MenuController {
 
     @PostMapping(path = "/unlink")
     @Transactional
+    @CacheEvict("menus")
     @Operation(summary = "Удаляем блюда по списку из меню")
     public ResponseEntity<Menu> unlinkDishFromMenu(
             @RequestParam(name = "menuId") @NotNull Integer menuId,
@@ -114,6 +120,7 @@ public class MenuController {
 
     @DeleteMapping(path = "/{id}")
     @Transactional
+    @CacheEvict("menus")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
             @PathVariable @NotNull Integer id
