@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -33,7 +34,7 @@ import static club.beingsoft.restaurants.util.ValidationUtil.*;
 
 
 @RestController
-@RequestMapping(path = "/rest/menus", produces = "application/json")
+@RequestMapping(path = "/rest/menus", produces = MediaType.APPLICATION_JSON_VALUE)
 @Transactional(readOnly = true)
 @Validated
 @Tag(name = "Меню", description = "Управление меню, добавление/удаление блюд в меню")
@@ -58,7 +59,7 @@ public class MenuController {
         return menuJpaRepository.findById(id).orElseThrow(() -> getFoundException(Menu.class, id));
     }
 
-    @PostMapping(path = "/", consumes = "application/json")
+    @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     @CacheEvict("menus")
     public ResponseEntity<Menu> save(

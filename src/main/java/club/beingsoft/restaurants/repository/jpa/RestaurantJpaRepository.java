@@ -1,6 +1,5 @@
 package club.beingsoft.restaurants.repository.jpa;
 
-import club.beingsoft.restaurants.model.Menu;
 import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.to.RestaurantWithVotesTo;
 import org.springframework.data.jpa.repository.Query;
@@ -38,10 +37,10 @@ public interface RestaurantJpaRepository extends CrudRepository<Restaurant, Inte
             "order by 3 desc")
     List<RestaurantWithVotesTo> getSortedByVotes(LocalDate date);
 
-    @Query("select m from Menu m join fetch m.restaurant r join fetch m.dishes d " +
+    @Query("select r from Restaurant r join fetch r.menus m join fetch m.dishes d " +
             "where r.deleteDate is null " +
             "and m.deleteDate is null " +
             "and d.deleteDate is null " +
             "and m.menuDate = ?1")
-    List<Menu> getAllHierarchy(LocalDate date);
+    List<Restaurant> getAllHierarchy(LocalDate date);
 }

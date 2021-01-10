@@ -15,6 +15,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +31,7 @@ import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
 import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 
 @RestController
-@RequestMapping(path = "/rest/dishes", produces = "application/json")
+@RequestMapping(path = "/rest/dishes", produces = MediaType.APPLICATION_JSON_VALUE)
 @Transactional(readOnly = true)
 @Validated
 @Tag(name = "Блюда", description = "Управление блюдами. Связка блюд с меню через контроллер меню")
@@ -69,7 +70,7 @@ public class DishController {
         return dishJpaRepository.getDishesForMenu(menuId);
     }
 
-    @PostMapping(path = "/{id}", consumes = "application/json")
+    @PostMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict("dishes")
     @Transactional
     public ResponseEntity<Dish> save(

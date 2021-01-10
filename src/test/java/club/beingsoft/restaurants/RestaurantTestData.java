@@ -10,7 +10,7 @@ import static club.beingsoft.restaurants.UserTestData.ADMIN;
 import static club.beingsoft.restaurants.model.AbstractBaseEntity.START_SEQ;
 
 public class RestaurantTestData {
-    public static TestMatcher<Restaurant> RESTAURANT_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(Restaurant.class, "user", "menus", "editDate", "deleteDate");
+    public static TestMatcher<Restaurant> RESTAURANT_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(Restaurant.class, "user", "menus", "editDate", "deleteDate", "votes");
 
     public static final int RESTAURANT_1_ID = START_SEQ + 2;
     public static final int RESTAURANT_2_ID = START_SEQ + 3;

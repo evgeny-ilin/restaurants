@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +28,7 @@ import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 import static club.beingsoft.restaurants.util.ValidationUtil.isAfterDeadLine;
 
 @RestController
-@RequestMapping(path = "/rest/votes", produces = "application/json")
+@RequestMapping(path = "/rest/votes", produces = MediaType.APPLICATION_JSON_VALUE)
 @Transactional(readOnly = true)
 @Validated
 @Tag(name = "Голосование", description = "Голосвание согласно правилам")

@@ -2,7 +2,6 @@ package club.beingsoft.restaurants.controller;
 
 //Field selection + pagging + version API + X-HTTP-Method-Override https://medium.com/@mwaysolutions/10-best-practices-for-better-restful-api-cbe81b06f291
 
-import club.beingsoft.restaurants.model.Menu;
 import club.beingsoft.restaurants.model.Restaurant;
 import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.to.RestaurantWithVotesTo;
@@ -15,6 +14,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -30,11 +30,15 @@ import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
 import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 
 @RestController
-@RequestMapping(path = "/rest/restaurants", produces = "application/json")
+@RequestMapping(path = RestaurantController.REST_URL
+        //, produces = MediaType.APPLICATION_JSON_VALUE
+)
 @Transactional(readOnly = true)
 @Validated
 @Tag(name = "Рестораны", description = "Управление ресторанами. Можно получить некоторую статистику")
 public class RestaurantController {
+    static final String REST_URL = "/rest/restaurants";
+
     @Autowired
     private RestaurantJpaRepository restaurantJpaRepository;
 
@@ -62,7 +66,7 @@ public class RestaurantController {
     @GetMapping(path = "/hierarchy")
     @Cacheable("menus")
     @Operation(summary = "Рестораны с блюдами", description = "Выводит рестораны, меню и блюда на дату")
-    public List<Menu> getAllHierarchy(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+    public List<Restaurant> getAllHierarchy(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         date = ValidationUtil.getLocalDate(date);
         return restaurantJpaRepository.getAllHierarchy(date);
     }
@@ -73,7 +77,7 @@ public class RestaurantController {
         return restaurantJpaRepository.findById(id).orElseThrow(() -> getFoundException(Restaurant.class, id));
     }
 
-    @PostMapping(path = "/{id}", consumes = "application/json")
+    @PostMapping(path = "/{id}", produces = "application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict({"restaurants", "restaurantsTo", "menus"})
     @Transactional
     public ResponseEntity<Restaurant> save(

@@ -70,10 +70,12 @@ public abstract class AbstractBaseEntity implements HasId {
     }
 
     @Override
+    @JsonIgnore
     public boolean isNew() {
         return this.id == null;
     }
 
+    @JsonIgnore
     public boolean isDeleted() {
         return this.deleteUser != null;
     }

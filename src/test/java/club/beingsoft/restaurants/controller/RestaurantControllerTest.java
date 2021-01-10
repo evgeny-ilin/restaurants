@@ -15,8 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -24,13 +26,17 @@ import java.util.List;
 
 import static club.beingsoft.restaurants.RestaurantTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
-//TODO Add getHierarchyTest
+import static club.beingsoft.restaurants.util.TestUtil.userHttpBasic;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class RestaurantControllerTest {
+public class RestaurantControllerTest extends AbstractControllerTest {
 
+    private static final String REST_URL = RestaurantController.REST_URL + '/';
     private static final Logger log = LoggerFactory.getLogger(RestaurantControllerTest.class);
 
     private static MockedStatic<SecurityUtil> securityUtilMocked;
@@ -52,7 +58,7 @@ public class RestaurantControllerTest {
     @Rule
     public TestRule watcher = new TestWatcher() {
         protected void starting(Description description) {
-            System.out.println("Starting test: " + description.getMethodName());
+            log.info("Starting test: {}", description.getMethodName());
         }
     };
 
@@ -98,10 +104,20 @@ public class RestaurantControllerTest {
         RESTAURANT_MATCHER.assertMatch(restaurantDB, DELETED_RESTAURANT);
     }
 
-
     @Test
     public void getSortedByVotesRestaurants() {
         List<RestaurantWithVotesTo> restaurantDB = restaurantController.getSortedByVotes(LocalDate.now());
         Assert.assertEquals(RESTAURANTS_WITH_VOTES_TO, restaurantDB);
+    }
+
+    @Test
+    public void getHierarchy() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "hierarchy?date=" + LocalDate.now())
+                .with(userHttpBasic(ADMIN)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RESTAURANT_MATCHER.contentJson(List.of(RESTAURANT_1, RESTAURANT_1)))
+                .andReturn();
     }
 }

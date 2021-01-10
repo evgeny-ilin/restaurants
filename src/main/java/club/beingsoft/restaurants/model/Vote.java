@@ -1,5 +1,8 @@
 package club.beingsoft.restaurants.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -7,7 +10,8 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "votes",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "vote_date"}, name = "votes_unique_user_date_idx")}
-        )
+)
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@UUID")
 public class Vote extends AbstractBaseEntity {
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
