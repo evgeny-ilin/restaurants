@@ -2,6 +2,7 @@ package club.beingsoft.restaurants.controller;
 
 import club.beingsoft.restaurants.model.Dish;
 import club.beingsoft.restaurants.model.User;
+import club.beingsoft.restaurants.to.DishTo;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
@@ -25,6 +26,8 @@ import java.util.List;
 
 import static club.beingsoft.restaurants.DishTestData.*;
 import static club.beingsoft.restaurants.UserTestData.ADMIN;
+import static club.beingsoft.restaurants.util.DishUtil.asTo;
+import static club.beingsoft.restaurants.util.DishUtil.createNewFromTo;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -80,11 +83,11 @@ public class DishControllerTest {
 
     @Test
     public void saveNewDish() {
-        Dish dishDB = (Dish) dishController.save(null, getNewDish()).getBody();
+        DishTo dishDB = dishController.save(null, getNewDish()).getBody();
         assert dishDB != null;
-        Dish newDish = getNewDish();
+        DishTo newDish = getNewDish();
         newDish.setId(dishDB.getId());
-        DISH_MATCHER.assertMatch(dishDB, newDish);
+        DISH_MATCHER.assertMatch(createNewFromTo(dishDB), createNewFromTo(newDish));
     }
 
     @Test
@@ -94,7 +97,7 @@ public class DishControllerTest {
 
     @Test
     public void updateDish() {
-        dishController.save(DISH_3_ID, UPDATED_DISH);
+        dishController.save(DISH_3_ID, asTo(UPDATED_DISH));
         Dish dishDB = dishController.get(DISH_3_ID);
         DISH_MATCHER.assertMatch(dishDB, UPDATED_DISH);
     }

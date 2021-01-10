@@ -5,6 +5,7 @@ import club.beingsoft.restaurants.model.Menu;
 import club.beingsoft.restaurants.model.QMenu;
 import club.beingsoft.restaurants.repository.jpa.DishJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.MenuJpaRepository;
+import club.beingsoft.restaurants.to.DishTo;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.ValidationUtil;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
@@ -27,6 +28,8 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
+import static club.beingsoft.restaurants.util.DishUtil.asTo;
+import static club.beingsoft.restaurants.util.DishUtil.createNewFromTo;
 import static club.beingsoft.restaurants.util.ValidationUtil.assureIdConsistent;
 import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
 
@@ -73,10 +76,11 @@ public class DishController {
     @PostMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict("dishes")
     @Transactional
-    public ResponseEntity<Dish> save(
+    public ResponseEntity<DishTo> save(
             @PathVariable Integer id,
-            @RequestBody @NotNull Dish dish
+            @RequestBody @NotNull DishTo dishTo
     ) {
+        Dish dish = createNewFromTo(dishTo);
         assureIdConsistent(dish, id);
         dish.setUser(SecurityUtil.getAuthUser());
         boolean isNew = dish.isNew();
@@ -85,7 +89,7 @@ public class DishController {
             URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/rest/dishes/{id}")
                     .buildAndExpand(dish.getId()).toUri();
-            return ResponseEntity.created(uriOfNewResource).body(dish);
+            return ResponseEntity.created(uriOfNewResource).body(asTo(dish));
         } else {
             return ResponseEntity.noContent().build();
         }

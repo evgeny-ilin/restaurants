@@ -31,10 +31,20 @@ public class Dish extends AbstractNamedEntity {
         this(null, menu, name, price);
     }
 
+    public Dish(Set<Menu> menus, String name, BigDecimal price) {
+        this(null, menus, name, price);
+    }
+
     public Dish(Integer id, Menu menu, String name, BigDecimal price) {
         super(id, name);
         this.price = price.setScale(2, RoundingMode.HALF_UP);
         this.menus.add(menu);
+    }
+
+    public Dish(Integer id, Set<Menu> menus, String name, BigDecimal price) {
+        super(id, name);
+        this.price = price.setScale(2, RoundingMode.HALF_UP);
+        this.menus = menus;
     }
 
     public BigDecimal getPrice() {
