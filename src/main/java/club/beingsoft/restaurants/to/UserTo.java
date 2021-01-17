@@ -1,16 +1,14 @@
 package club.beingsoft.restaurants.to;
 
 import club.beingsoft.restaurants.model.Role;
-import club.beingsoft.restaurants.model.User;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Set;
 
-public class UserTo extends BaseTo implements Serializable {
+public class UserTo extends BaseNamedTo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Email
@@ -31,14 +29,12 @@ public class UserTo extends BaseTo implements Serializable {
     public UserTo() {
     }
 
-    public UserTo(Integer id, String name, String email, String password, Set<Role> roles, boolean enabled, LocalDateTime deleteDate, User deleteUser) {
+    public UserTo(Integer id, String name, String email, String password, Set<Role> roles, boolean enabled) {
         super(id, name);
         this.email = email;
         this.password = password;
         this.roles = roles;
         this.enabled = enabled;
-        this.deleteDate = deleteDate;
-        this.deleteUser = deleteUser;
     }
 
     public boolean isEnabled() {

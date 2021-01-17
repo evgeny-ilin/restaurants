@@ -112,9 +112,9 @@ public class User extends AbstractNamedEntity {
     }
 
     @Override
-    public void delete() {
+    public void delete(User user) {
         this.enabled = false;
-        super.delete();
+        super.delete(user);
     }
 
     @Override
@@ -124,29 +124,6 @@ public class User extends AbstractNamedEntity {
                 ", email=" + email +
                 ", name=" + name +
                 ", enabled=" + enabled +
-                ", roles=" + roles +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        if (!super.equals(o)) return false;
-
-        User user = (User) o;
-
-        if (enabled != user.enabled) return false;
-        if (password != null ? !password.equals(user.password) : user.password != null) return false;
-        return email != null ? email.equals(user.email) : user.email == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (enabled ? 1 : 0);
-        return result;
     }
 }

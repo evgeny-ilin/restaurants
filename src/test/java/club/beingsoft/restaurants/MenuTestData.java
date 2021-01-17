@@ -2,6 +2,7 @@ package club.beingsoft.restaurants;
 
 import club.beingsoft.restaurants.model.Dish;
 import club.beingsoft.restaurants.model.Menu;
+import club.beingsoft.restaurants.util.TestMatcher;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -10,9 +11,11 @@ import java.util.Set;
 
 import static club.beingsoft.restaurants.DishTestData.*;
 import static club.beingsoft.restaurants.RestaurantTestData.*;
+import static club.beingsoft.restaurants.UserTestData.ADMIN;
 import static club.beingsoft.restaurants.model.AbstractBaseEntity.START_SEQ;
 
 public class MenuTestData {
+    public static TestMatcher<Menu> MENU_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(Menu.class, "user", "restaurant", "dishes", "editDate", "deleteDate");
     public static final List<Integer> DISHES_IDs = List.of(DISH_1_ID, DISH_2_ID);
     public static int MENU_1_ID = START_SEQ + 6;
     public static int MENU_2_ID = START_SEQ + 7;
@@ -35,7 +38,7 @@ public class MenuTestData {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        DELETED_MENU.delete();
+        DELETED_MENU.delete(ADMIN);
     }
 
     public static Menu getLinkedMenu() {

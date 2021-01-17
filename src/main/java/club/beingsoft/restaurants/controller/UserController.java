@@ -3,6 +3,7 @@ package club.beingsoft.restaurants.controller;
 import club.beingsoft.restaurants.model.User;
 import club.beingsoft.restaurants.service.UserService;
 import club.beingsoft.restaurants.to.UserTo;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import static club.beingsoft.restaurants.util.ValidationUtil.checkNew;
 @RequestMapping(path = "/rest/users")
 @Transactional(readOnly = true)
 @Validated
+@Tag(name = "Пользователи", description = "Управление пользователями")
 public class UserController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 

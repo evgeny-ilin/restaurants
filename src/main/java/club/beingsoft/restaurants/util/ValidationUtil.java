@@ -10,6 +10,8 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 
 import javax.validation.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class ValidationUtil {
 
     private static final Validator validator;
+    private static LocalDateTime deadLine = LocalDate.now().atTime(11,0);
 
     static {
         //  From Javadoc: implementations are thread-safe and instances are typically cached and reused.
@@ -85,9 +88,7 @@ public class ValidationUtil {
 
     public static void assureIdConsistent(HasId bean, Integer id) {
 //      conservative when you reply, but accept liberally (http://stackoverflow.com/a/32728226/548473)
-        if (bean.isNew()) {
-            bean.setId(id);
-        } else if (bean.id() != id) {
+        if (!bean.isNew() && bean.id() != id) {
             throw new IllegalRequestDataException(bean + " must be with id=" + id);
         }
     }
@@ -109,5 +110,22 @@ public class ValidationUtil {
                         .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
                         .collect(Collectors.joining("<br>"))
         );
+    }
+
+    public static NotFoundException getFoundException(Class clazz, Integer id) {
+        return new NotFoundException(clazz, id);
+    }
+
+    public static void setDeadLine(LocalDateTime deadLine) {
+        ValidationUtil.deadLine = deadLine;
+    }
+
+    public static boolean isAfterDeadLine() {
+        return LocalDateTime.now().isAfter(deadLine);
+    }
+
+    public static LocalDate getLocalDate(LocalDate date) {
+        if (date == null) date = LocalDate.now();
+        return date;
     }
 }

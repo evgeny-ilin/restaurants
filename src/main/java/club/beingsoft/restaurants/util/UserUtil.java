@@ -16,7 +16,7 @@ public class UserUtil {
     }
 
     public static UserTo asTo(User user) {
-        return new UserTo(user.getId(), user.getName(), user.getEmail(), null, user.getRoles(), user.isEnabled(), user.getDeleteDate(), user.getDeleteUser());
+        return new UserTo(user.getId(), user.getName(), user.getEmail(), null, user.getRoles(), user.isEnabled());
     }
 
     public static User updateFromTo(User user, UserTo userTo) {

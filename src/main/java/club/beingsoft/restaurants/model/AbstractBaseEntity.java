@@ -7,7 +7,7 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 @MappedSuperclass
@@ -29,7 +29,7 @@ public abstract class AbstractBaseEntity implements HasId {
 
     @Column(name = "edit_date", nullable = false)
     @NotNull
-    protected LocalDateTime editDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    protected ZonedDateTime editDate = ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,7 +38,7 @@ public abstract class AbstractBaseEntity implements HasId {
     protected User deleteUser;
 
     @Column(name = "delete_date")
-    protected LocalDateTime deleteDate;
+    protected ZonedDateTime deleteDate;
 
 
     protected AbstractBaseEntity() {
@@ -65,29 +65,31 @@ public abstract class AbstractBaseEntity implements HasId {
         return id;
     }
 
-    public void setUser() {
-        this.user = SecurityUtil.getAuthUser();
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
+    @JsonIgnore
     public boolean isNew() {
         return this.id == null;
     }
 
+    @JsonIgnore
     public boolean isDeleted() {
         return this.deleteUser != null;
     }
 
-    public void delete() {
-        this.deleteUser = SecurityUtil.getAuthUser();
-        this.deleteDate = LocalDateTime.now();
+    public void delete(User user) {
+        this.deleteUser = user;
+        this.deleteDate = ZonedDateTime.now();
     }
 
     public User getDeleteUser() {
         return deleteUser;
     }
 
-    public LocalDateTime getDeleteDate() {
+    public ZonedDateTime getDeleteDate() {
         return deleteDate;
     }
 
@@ -95,7 +97,6 @@ public abstract class AbstractBaseEntity implements HasId {
     public String toString() {
         return getClass().getSimpleName() + ":" +
                 "id=" + id +
-                ", editUser=" + user.name +
                 ", editDate=" + editDate;
     }
 

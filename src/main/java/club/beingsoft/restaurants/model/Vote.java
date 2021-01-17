@@ -1,13 +1,19 @@
 package club.beingsoft.restaurants.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "restaurant_id", "vote_date"}, name = "votes_unique_user_restaurant_idx")})
+@Table(name = "votes",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "vote_date"}, name = "votes_unique_user_date_idx")}
+)
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@UUID")
 public class Vote extends AbstractBaseEntity {
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
     private Restaurant restaurant;
@@ -47,5 +53,24 @@ public class Vote extends AbstractBaseEntity {
 
     public Restaurant getRestaurant() {
         return restaurant;
+    }
+
+    public void undelete() {
+        this.deleteDate = null;
+        this.deleteUser = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Vote vote = (Vote) o;
+        return restaurant.getId().equals(vote.restaurant.getId()) && voteDate.equals(vote.voteDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
