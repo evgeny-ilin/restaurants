@@ -5,7 +5,7 @@ use "soft delete" method witch able to get reports about past events in a databa
 For first start please use username 'ADMIN' and password '1'. For security please change password after first login.
 Application support REST API
 
-Cople of curl operations:
+Couple of curl operations:
 Login curl -v --cookie-jar cookie -d username=admin@mail.ru -d password=1 -L http://localhost:8080/login
 
 Get all restaurants curl -u admin@mail.ru:1 -i -H 'Accept:application/json' localhost:8080/rest/restaurants
