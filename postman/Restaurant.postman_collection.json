@@ -1,0 +1,1111 @@
+{
+  "info": {
+    "_postman_id": "b663e151-c2fe-4654-abea-6009b7e252bf",
+    "name": "Restaurant",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Dish",
+      "item": [
+        {
+          "name": "Dishes Get List",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/dishes/",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "dishes",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Dish Create",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Dish-3\",\r\n    \"price\": 55.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/rest/dishes/0",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "dishes",
+                "0"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Dish Update",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": 100011,\r\n    \"name\":\"Dish3\",\r\n    \"price\": 5.55\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/rest/dishes/100011",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "dishes",
+                "100011"
+              ],
+              "query": [
+                {
+                  "key": "menuId",
+                  "value": "1",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Dish Get",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/dishes/100009",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "dishes",
+                "100009"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "100003",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Dish Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/dishes/100003",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "dishes",
+                "100003"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Dishes for Restaurant",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/dishes/restaurant?date=&restaurantId=100002",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "dishes",
+                "restaurant"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": ""
+                },
+                {
+                  "key": "restaurantId",
+                  "value": "100002"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Dishes for Menu",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/dishes/menu/100006",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "dishes",
+                "menu",
+                "100006"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Restaurant",
+      "item": [
+        {
+          "name": "Restaurants Get List",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/restaurants",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "restaurants"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restaurant Get",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/restaurants/100004",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "restaurants",
+                "100004"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "100003",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restaurant Create",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Restaurant3\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/rest/restaurants/0",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "restaurants",
+                "0"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restaurant Delete",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/restaurants/100018",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "restaurants",
+                "100018"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restaurants With Dishes",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/restaurants/withdishes?date=",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "restaurants",
+                "withdishes"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restaurants Get Hierarchy",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/restaurants/hierarchy?date=2021-01-10",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "restaurants",
+                "hierarchy"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2021-01-10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restaurants Sorted By Votes",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/restaurants/sortedbyvotes?date",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "restaurants",
+                "sortedbyvotes"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Menu",
+      "item": [
+        {
+          "name": "Menu Get List",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/menus",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "menus"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Menu Create",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Menu-2\",\r\n    \"menuDate\":\"2020-10-25\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/rest/menus/?menu=&restaurant=100018",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "menus",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "menu",
+                  "value": ""
+                },
+                {
+                  "key": "restaurant",
+                  "value": "100018"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Menu Get",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/menus/100006",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "menus",
+                "100006"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "100003",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Menu Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/menus/100001",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "menus",
+                "100001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Link Dishes to Menu",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/menus/link?menuId=100019&dishesIds=100021,100022,100023",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "menus",
+                "link"
+              ],
+              "query": [
+                {
+                  "key": "menuId",
+                  "value": "100019"
+                },
+                {
+                  "key": "dishesIds",
+                  "value": "100021,100022,100023"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UnLink Dishes from Menu",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/menus/unlink?menuId=100019&dishesIds=100022",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "menus",
+                "unlink"
+              ],
+              "query": [
+                {
+                  "key": "menuId",
+                  "value": "100019"
+                },
+                {
+                  "key": "dishesIds",
+                  "value": "100022"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Vote",
+      "item": [
+        {
+          "name": "GetVotes",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/votes/",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "votes",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Vote",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/votes/?restaurant=100018",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "votes",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "01.11.2020",
+                  "disabled": true
+                },
+                {
+                  "key": "restaurant",
+                  "value": "100018"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/users",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/users/by?email=user-2@mail.ru",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "users",
+                "by"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "user-2@mail.ru"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update user",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"deleteUser\": null,\r\n    \"deleteDate\": null,\r\n    \"id\": 100015,\r\n    \"name\": \"USER_UPDATED-2\",\r\n    \"email\": \"user-2@mail.ru\",\r\n    \"password\": null,\r\n    \"roles\": [\r\n        \"USER\"\r\n    ],\r\n    \"enabled\": true,\r\n    \"new\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/rest/users/100015",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "users",
+                "100015"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/users/100001",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "users",
+                "100001"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "100001",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Enabled",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/users/100001?enabled=false",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "users",
+                "100001"
+              ],
+              "query": [
+                {
+                  "key": "enabled",
+                  "value": "false"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create new user",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "admin@mail.ru",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "1",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"USER_TEST-2\",\r\n    \"email\": \"user-2@mail.ru\",\r\n    \"password\": \"123\",\r\n    \"roles\": [\r\n        \"USER\"\r\n    ],\r\n    \"new\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:8080/rest/users",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "localhost:8080/rest/users/100015",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "rest",
+                "users",
+                "100015"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

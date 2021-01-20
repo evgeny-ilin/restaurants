@@ -40,7 +40,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/rest/restaurants/**").hasRole(ADMIN)
                 .antMatchers("/rest/users/**").hasRole(ADMIN)
                 .antMatchers("/rest/votes/**").hasAnyRole(ADMIN, USER)
-                .antMatchers("/swagger-ui/**").hasRole(ADMIN)
+                .antMatchers("/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**").hasRole(ADMIN)
                 .antMatchers("/**").denyAll()
                 .and().httpBasic()
                 .and().csrf().disable()
