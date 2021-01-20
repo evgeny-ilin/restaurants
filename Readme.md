@@ -15,3 +15,5 @@ Get most voted restaurants curl -u admin@mail.ru:1 -i -H 'Accept:application/jso
 
 Vote restaurant curl -u admin@mail.ru:1 -i -H 'Accept:application/json' -d "restaurant=100004" "localhost:
 8080/rest/votes/
+
+Swagger http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
