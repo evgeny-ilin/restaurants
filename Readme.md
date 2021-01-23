@@ -5,7 +5,7 @@ use "soft delete" method witch able to get reports about past events in a databa
 For first start please use username 'ADMIN' and password '1'. For security please change password after first login.
 Application support caching and REST API
 
-Application created with Java 15, SpringBoot, Hibernmate, HSQLDB, QueryDSL, Jackson, Lombok, Swagger, JUnit
+Application created with Java 15, SpringBoot, SpringCache, Hibernate, HSQLDB, QueryDSL, Jackson, Lombok, Swagger, JUnit
 
 API Documentation<br>
 http://localhost:8080/swagger-ui.html
