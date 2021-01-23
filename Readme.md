@@ -32,7 +32,7 @@ curl -L -X DELETE 'localhost:8080/rest/votes/100015' \
 -H 'Authorization: Basic YWRtaW5AbWFpbC5ydTox'
 </pre>
 
-### **Admin (users)
+### **Admin (users)**
 
 _Create new user_
 <pre>
@@ -95,7 +95,7 @@ _Enable/disable user_
 curl -L -X PATCH 'localhost:8080/rest/users/100001?enabled=false'
 </pre>
 
-### **Admin (restaurants)
+### **Admin (restaurants)**
 
 _Create new restaurant_
 <pre>
@@ -143,7 +143,7 @@ curl -L -X GET 'localhost:8080/rest/restaurants/sortedbyvotes?date' \
 -H 'Authorization: Basic YWRtaW5AbWFpbC5ydTox'
 </pre>
 
-### **Admin (menus)
+### **Admin (menus)**
 
 _Create new menu for restaurant_
 <pre>
@@ -185,7 +185,7 @@ _Delete menu_
 curl -L -X DELETE 'localhost:8080/rest/menus/100001'
 </pre>
 
-### **Admin (dishes)
+### **Admin (dishes)**
 
 _Create new dish_
 <pre>
