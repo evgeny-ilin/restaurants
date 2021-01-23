@@ -7,8 +7,9 @@ Application support caching and REST API
 
 Application created with Java 15, SpringBoot, Hibernmate, HSQLDB, QueryDSL, Jackson, Lombok, Swagger, JUnit
 
-API Documentation
-[http://localhost:8080/swagger-ui.html][API Documentation]
+API Documentation<br>
+http://localhost:8080/swagger-ui.html
+</br>
 
 ### **User vote**
 
