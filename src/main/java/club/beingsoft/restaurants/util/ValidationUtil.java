@@ -5,6 +5,7 @@ import club.beingsoft.restaurants.model.Dish;
 import club.beingsoft.restaurants.util.exception.EntityDeletedException;
 import club.beingsoft.restaurants.util.exception.IllegalRequestDataException;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
+import club.beingsoft.restaurants.util.exception.VoteCantBeChangedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
@@ -120,8 +121,11 @@ public class ValidationUtil {
         ValidationUtil.deadLine = deadLine;
     }
 
-    public static boolean isAfterDeadLine() {
-        return LocalDateTime.now().isAfter(deadLine);
+    public static void checkDeadLine() {
+        if (LocalDateTime.now().isAfter(deadLine)) {
+            throw new VoteCantBeChangedException("Vote can't be changed due deadline");
+        }
+        ;
     }
 
     public static LocalDate getLocalDate(LocalDate date) {

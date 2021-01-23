@@ -65,7 +65,7 @@ public class RestaurantController {
 
     @GetMapping(path = "/hierarchy")
     @Cacheable("menus")
-    @Operation(summary = "Рестораны с блюдами", description = "Выводит рестораны, меню и блюда на дату")
+    @Operation(summary = "Рестораны с блюдами", description = "Выводит рестораны, меню и блюда на дату. Если дата пустая, то устанавливается текущая дата")
     public List<Restaurant> getAllHierarchy(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         date = ValidationUtil.getLocalDate(date);
         return restaurantJpaRepository.getAllHierarchy(date);

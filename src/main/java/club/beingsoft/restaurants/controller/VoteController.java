@@ -7,10 +7,12 @@ import club.beingsoft.restaurants.repository.jpa.RestaurantJpaRepository;
 import club.beingsoft.restaurants.repository.jpa.VoteJpaRepository;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.VoteCantBeChangedException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +26,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static club.beingsoft.restaurants.util.ValidationUtil.checkDeadLine;
 import static club.beingsoft.restaurants.util.ValidationUtil.getFoundException;
-import static club.beingsoft.restaurants.util.ValidationUtil.isAfterDeadLine;
 
 @RestController
 @RequestMapping(path = "/rest/votes", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,13 +68,11 @@ public class VoteController {
     @PostMapping(path = "/")
     @CacheEvict("votes")
     @Transactional
+    @Operation(description = "Can't be changed after 11:00 and if restaurant deleted")
     public ResponseEntity<Vote> save(
             @RequestParam(name = "restaurant") @NotNull Integer restaurantId
     ) {
-        Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).orElseThrow(() -> getFoundException(Restaurant.class, restaurantId));
-        if (restaurant.isDeleted()) {
-            throw new VoteCantBeChangedException("Vote can't be changed due restaurant deleted");
-        }
+        Restaurant restaurant = checkRestaurantDeleted(restaurantId);
 
         LocalDate date = LocalDate.now();
         Optional<Vote> voteDB = voteJpaRepository.findOne(
@@ -84,9 +84,7 @@ public class VoteController {
         if (voteDB.isPresent()) {
             vote = voteDB.get();
             vote.undelete();
-            if (isAfterDeadLine()) {
-                throw new VoteCantBeChangedException("Vote can't be changed due deadline");
-            }
+            checkDeadLine();
         } else {
             vote = new Vote(restaurant, date);
         }
@@ -101,5 +99,28 @@ public class VoteController {
         } else {
             return ResponseEntity.noContent().build();
         }
+    }
+
+    @DeleteMapping(path = "/{id}")
+    @Transactional
+    @CacheEvict({"votes"})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(description = "Can't be changed after 11:00 and if restaurant deleted")
+    public void delete(
+            @PathVariable @NotNull Integer id
+    ) {
+        checkDeadLine();
+        Vote vote = get(id);
+        checkRestaurantDeleted(vote.getRestaurant().getId());
+        vote.delete(SecurityUtil.getAuthUser());
+        voteJpaRepository.save(vote);
+    }
+
+    private Restaurant checkRestaurantDeleted(Integer restaurantId) {
+        Restaurant restaurant = restaurantJpaRepository.findById(restaurantId).orElseThrow(() -> getFoundException(Restaurant.class, restaurantId));
+        if (restaurant.isDeleted()) {
+            throw new VoteCantBeChangedException("Vote can't be changed due restaurant deleted");
+        }
+        return restaurant;
     }
 }
