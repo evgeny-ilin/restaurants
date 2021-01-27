@@ -1,5 +1,8 @@
 ## **Restaurants application**
+
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c61f6d22cd4744d7a513a895aadaec47)](https://www.codacy.com/gh/evgeny-ilin/restaurants/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=evgeny-ilin/restaurants&amp;utm_campaign=Badge_Grade)
+
+[![Build Status](https://travis-ci.com/evgeny-ilin/restaurants.svg?branch=master)](https://travis-ci.com/evgeny-ilin/restaurants)
 
 Application provides to vote users for restaurants. Admins can add users, menus, dishes and restaurants. Application
 use "soft delete" method witch able to get reports about past events in a database. Application provide authorization.
