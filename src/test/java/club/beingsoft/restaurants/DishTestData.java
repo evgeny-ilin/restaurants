@@ -33,6 +33,6 @@ public class DishTestData {
     }
 
     public static DishTo getNewDish() {
-        return asTo(new Dish(null, (Menu) null, "DISH-NEW-TEST", new BigDecimal(4.40)));
+        return asTo(new Dish(null, (Menu) null, "DISH-NEW-TEST", new BigDecimal("4.40")));
     }
 }
