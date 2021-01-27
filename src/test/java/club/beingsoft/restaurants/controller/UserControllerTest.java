@@ -1,7 +1,6 @@
 package club.beingsoft.restaurants.controller;
 
 import club.beingsoft.restaurants.model.User;
-import club.beingsoft.restaurants.service.UserService;
 import club.beingsoft.restaurants.to.UserTo;
 import club.beingsoft.restaurants.util.SecurityUtil;
 import club.beingsoft.restaurants.util.exception.NotFoundException;
@@ -37,9 +36,6 @@ public class UserControllerTest {
     private static MockedStatic<SecurityUtil> securityUtilMocked;
     @Autowired
     private UserController userController;
-
-    @Autowired
-    private UserService userService;
 
     @BeforeClass
     public static void beforeAll() {
